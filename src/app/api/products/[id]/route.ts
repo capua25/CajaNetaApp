@@ -13,6 +13,16 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { data: profileForEdit } = await supabase
+    .from('users')
+    .select('plan_status')
+    .eq('id', user.id)
+    .single()
+
+  if (profileForEdit?.plan_status === 'cancelled') {
+    return NextResponse.json({ error: 'SUBSCRIPTION_CANCELLED' }, { status: 403 })
+  }
+
   const body = await request.json()
   const { name, cost, expenses, price, desired_margin, quantity_sold } = body
 
@@ -60,7 +70,7 @@ export async function DELETE(
 
   const { data: profile } = await supabase
     .from('users')
-    .select('plan')
+    .select('plan, plan_status')
     .eq('id', user.id)
     .single()
 

@@ -62,7 +62,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
       ) : (
-        <ProductList products={productList} isFreePlan={userProfile?.plan === 'free'} />
+        <ProductList products={productList} isFreePlan={userProfile?.plan === 'free'} planStatus={userProfile?.plan_status} />
       )}
     </main>
   )

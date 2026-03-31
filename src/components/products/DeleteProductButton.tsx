@@ -15,12 +15,24 @@ export function DeleteProductButton({ productId, disabled }: DeleteProductButton
   const router = useRouter()
 
   async function handleDelete() {
-    if (!confirm('¿Eliminár este producto?')) return
+    if (!confirm('¿Eliminar este producto?')) return
     setLoading(true)
 
-    await fetch(`/api/products/${productId}`, { method: 'DELETE' })
-    router.refresh()
-    setLoading(false)
+    try {
+      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        alert(data.error === 'FREE_PLAN_CANNOT_DELETE'
+          ? 'Necesitás un plan pago para eliminar productos.'
+          : 'No se pudo eliminar el producto. Intentá de nuevo.')
+        return
+      }
+      router.refresh()
+    } catch {
+      alert('No se pudo eliminar el producto. Intentá de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

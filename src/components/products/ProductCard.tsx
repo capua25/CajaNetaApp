@@ -9,12 +9,14 @@ import type { Product } from '@/lib/types'
 interface ProductCardProps {
   product: Product
   isFreePlan: boolean
+  planStatus?: string
 }
 
 const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
-export function ProductCard({ product, isFreePlan }: ProductCardProps) {
+export function ProductCard({ product, isFreePlan, planStatus }: ProductCardProps) {
+  const isCancelled = planStatus === 'cancelled'
   const result = calculate(product)
 
   return (
@@ -27,9 +29,15 @@ export function ProductCard({ product, isFreePlan }: ProductCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={result.status} />
-            <Link href={`/product/${product.id}/edit`} className="text-gray-400 hover:text-gray-600">
-              <Pencil className="h-4 w-4" />
-            </Link>
+            {isCancelled ? (
+              <span title="Reactivá tu suscripción para editar productos" className="text-gray-200 cursor-not-allowed">
+                <Pencil className="h-4 w-4" />
+              </span>
+            ) : (
+              <Link href={`/product/${product.id}/edit`} className="text-gray-400 hover:text-gray-600">
+                <Pencil className="h-4 w-4" />
+              </Link>
+            )}
             <DeleteProductButton productId={product.id} disabled={isFreePlan} />
           </div>
         </div>
