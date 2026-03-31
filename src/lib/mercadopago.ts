@@ -59,7 +59,6 @@ export async function createPreapproval(params: CreatePreapprovalParams): Promis
       payer_email: params.payerEmail,
       external_reference: params.externalReference,
       back_url: params.backUrl,
-      status: 'pending',
     }),
   })
 
