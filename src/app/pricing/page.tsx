@@ -65,7 +65,7 @@ export default async function PricingPage() {
           <CardHeader>
             <CardTitle className="text-2xl">Pro</CardTitle>
             <p className="text-3xl font-bold text-gray-900">
-              UYU 299
+              UYU 450
               <span className="text-base font-normal text-gray-500">/mes</span>
             </p>
             {userPlan === 'pro' && (

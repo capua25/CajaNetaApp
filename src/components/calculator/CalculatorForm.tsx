@@ -25,6 +25,7 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
   const [desiredMargin, setDesiredMargin] = useState(
     product ? String(Math.round(product.desired_margin * 100)) : '30'
   )
+  const [quantitySold, setQuantitySold] = useState(product ? String(product.quantity_sold ?? 0) : '0')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -57,6 +58,7 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
         expenses: numExpenses,
         price: numPrice,
         desired_margin: numMargin,
+        quantity_sold: Number(quantitySold) || 0,
       }),
     })
 
@@ -147,6 +149,19 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
                 placeholder="30"
               />
               <p className="text-xs text-gray-500">Para calcular el precio ideal</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="quantity_sold">Unidades vendidas por mes</Label>
+              <Input
+                id="quantity_sold"
+                type="number"
+                min="0"
+                step="1"
+                value={quantitySold}
+                onChange={e => setQuantitySold(e.target.value)}
+                placeholder="0"
+              />
+              <p className="text-xs text-gray-500">Necesario para el análisis de punto de equilibrio</p>
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>

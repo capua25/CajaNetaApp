@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json()
-  const { name, cost, expenses, price, desired_margin } = body
+  const { name, cost, expenses, price, desired_margin, quantity_sold } = body
 
   if (!name || cost == null || price == null) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -63,6 +63,7 @@ export async function POST(request: Request) {
       expenses: Number(expenses ?? 0),
       price: Number(price),
       desired_margin: Number(desired_margin ?? 0.3),
+      quantity_sold: Number(quantity_sold ?? 0),
     })
     .select()
     .single()
