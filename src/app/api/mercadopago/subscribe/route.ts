@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
     if (message === 'MP_NOT_CONFIGURED') {
       return NextResponse.json({ error: 'MP_NOT_CONFIGURED' }, { status: 503 })
     }
-    return NextResponse.json({ error: 'MP_API_ERROR', detail: message }, { status: 502 })
+    console.error('[subscribe] MP API error:', message)
+    return NextResponse.json({ error: 'MP_API_ERROR' }, { status: 502 })
   }
 }

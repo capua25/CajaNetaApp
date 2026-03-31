@@ -36,7 +36,7 @@ export async function POST() {
 
   const { error: updateError } = await supabase
     .from('users')
-    .update({ plan_status: 'cancelled' })
+    .update({ plan: 'free', plan_status: 'cancelled' })
     .eq('id', user.id)
 
   if (updateError) {

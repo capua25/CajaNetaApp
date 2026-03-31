@@ -26,6 +26,7 @@ export async function GET() {
       supabase
         .from('products')
         .select('id, name, price, cost, expenses, quantity_sold')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false }),
       supabase
         .from('fixed_costs')
@@ -35,10 +36,12 @@ export async function GET() {
     ])
 
   if (productsError) {
-    return NextResponse.json({ error: productsError.message }, { status: 500 })
+    console.error('[finanzas] DB error (products):', productsError.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
   if (costsError) {
-    return NextResponse.json({ error: costsError.message }, { status: 500 })
+    console.error('[finanzas] DB error (fixed-costs):', costsError.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
   const summary = buildFinancialSummary(

@@ -37,8 +37,7 @@ export async function POST(request: NextRequest) {
   try {
     preapproval = await getPreapproval(subscriptionId)
   } catch {
-    // MP unreachable — return 200 so MP doesn't retry storm us
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ error: 'MP_UNREACHABLE' }, { status: 503 })
   }
 
   const planMap = PLAN_BY_MP_ID()
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
   if (preapproval.status === 'authorized' && mappedPlan) {
     update = { plan: mappedPlan, plan_status: 'active', mp_subscription_id: subscriptionId }
   } else if (preapproval.status === 'cancelled') {
-    update = { plan_status: 'cancelled' }
+    update = { plan: 'free', plan_status: 'cancelled' }
   } else if (preapproval.status === 'paused') {
     update = { plan_status: 'paused' }
   }

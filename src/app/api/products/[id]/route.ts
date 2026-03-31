@@ -1,11 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  if (!UUID_REGEX.test(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
   const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -26,8 +31,20 @@ export async function PATCH(
   const body = await request.json()
   const { name, cost, expenses, price, desired_margin, quantity_sold } = body
 
-  if (!name || cost == null || price == null) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  if (typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
+    return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
+  }
+  if (typeof cost !== 'number' || !Number.isFinite(cost) || cost < 0) {
+    return NextResponse.json({ error: 'cost must be a non-negative finite number' }, { status: 400 })
+  }
+  if (typeof price !== 'number' || !Number.isFinite(price) || price < 0) {
+    return NextResponse.json({ error: 'price must be a non-negative finite number' }, { status: 400 })
+  }
+  if (expenses !== undefined && (typeof expenses !== 'number' || !Number.isFinite(expenses) || expenses < 0)) {
+    return NextResponse.json({ error: 'expenses must be a non-negative finite number' }, { status: 400 })
+  }
+  if (quantity_sold !== undefined && (!Number.isInteger(quantity_sold) || quantity_sold < 0)) {
+    return NextResponse.json({ error: 'quantity_sold must be a non-negative integer' }, { status: 400 })
   }
 
   const { data: product, error } = await supabase
@@ -46,7 +63,8 @@ export async function PATCH(
     .maybeSingle()
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('[products] DB error:', error.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
   if (!product) {
@@ -61,6 +79,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  if (!UUID_REGEX.test(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
   const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -85,7 +106,8 @@ export async function DELETE(
     .eq('user_id', user.id)
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('[products] DB error:', error.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
   return new NextResponse(null, { status: 204 })

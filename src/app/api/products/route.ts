@@ -14,10 +14,12 @@ export async function GET() {
   const { data: products, error } = await supabase
     .from('products')
     .select('*')
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('[products] DB error:', error.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
   return NextResponse.json(products)
@@ -54,8 +56,20 @@ export async function POST(request: Request) {
   const body = await request.json()
   const { name, cost, expenses, price, desired_margin, quantity_sold } = body
 
-  if (!name || cost == null || price == null) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  if (typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
+    return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
+  }
+  if (typeof cost !== 'number' || !Number.isFinite(cost) || cost < 0) {
+    return NextResponse.json({ error: 'cost must be a non-negative finite number' }, { status: 400 })
+  }
+  if (typeof price !== 'number' || !Number.isFinite(price) || price < 0) {
+    return NextResponse.json({ error: 'price must be a non-negative finite number' }, { status: 400 })
+  }
+  if (expenses !== undefined && (typeof expenses !== 'number' || !Number.isFinite(expenses) || expenses < 0)) {
+    return NextResponse.json({ error: 'expenses must be a non-negative finite number' }, { status: 400 })
+  }
+  if (quantity_sold !== undefined && (!Number.isInteger(quantity_sold) || quantity_sold < 0)) {
+    return NextResponse.json({ error: 'quantity_sold must be a non-negative integer' }, { status: 400 })
   }
 
   const { data: product, error } = await supabase
@@ -73,7 +87,8 @@ export async function POST(request: Request) {
     .single()
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('[products] DB error:', error.message)
+    return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
   return NextResponse.json(product, { status: 201 })
