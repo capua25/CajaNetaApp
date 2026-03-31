@@ -41,7 +41,7 @@ async function main() {
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cajanetaapp.com'
-  const backUrl = `${siteUrl}/dashboard`
+  const backUrl = `${siteUrl}/dashboard/cuenta`
 
   console.log(`Updating back_url to: ${backUrl}`)
 
