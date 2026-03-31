@@ -4,6 +4,7 @@ import { PLAN_CONFIGS } from '@/lib/plan-config'
 import type { Plan } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { SubscribeButton } from '@/components/billing/SubscribeButton'
 function CheckIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-500 flex-shrink-0" aria-hidden="true">
@@ -17,13 +18,15 @@ export default async function PricingPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   let userPlan: Plan | null = null
+  let userPlanStatus: string = 'free'
   if (user) {
     const { data: profile } = await supabase
       .from('users')
-      .select('plan')
+      .select('plan, plan_status')
       .eq('id', user.id)
       .single()
     userPlan = (profile?.plan ?? 'free') as Plan
+    userPlanStatus = profile?.plan_status ?? 'free'
   }
 
   return (
@@ -69,10 +72,17 @@ export default async function PricingPage() {
                   ) : (
                     <Button variant="outline" className="w-full" disabled>Plan actual</Button>
                   )
+                ) : !user ? (
+                  <Link href="/auth/register" className="block">
+                    <Button variant="outline" className="w-full">Registrate para suscribirte</Button>
+                  </Link>
+                ) : isActive && userPlanStatus === 'active' ? (
+                  <Button className="w-full" disabled>Plan activo</Button>
                 ) : (
-                  <Button className="w-full" disabled>
-                    {isActive ? 'Plan activo' : 'Próximamente'}
-                  </Button>
+                  <SubscribeButton
+                    plan={plan.key as 'plus' | 'pro'}
+                    label={`Suscribirme al ${plan.label}`}
+                  />
                 )}
               </CardContent>
             </Card>

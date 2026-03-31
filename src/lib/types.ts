@@ -62,4 +62,5 @@ export interface UserProfile {
   email: string
   plan: Plan
   plan_status: string
+  mp_subscription_id: string | null
 }
