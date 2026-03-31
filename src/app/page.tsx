@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, Calculator, DollarSign } from 'lucide-react'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
+import { createClient } from '@/lib/supabase/server'
 
 function CheckIcon() {
   return (
@@ -12,7 +14,11 @@ function CheckIcon() {
   )
 }
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) redirect('/dashboard')
+
   return (
     <main>
       {/* Hero */}
