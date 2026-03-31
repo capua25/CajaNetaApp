@@ -48,7 +48,6 @@ export function RegisterForm() {
     }
 
     router.push('/dashboard')
-    router.refresh()
   }
 
   if (confirmEmail) {

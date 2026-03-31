@@ -1,7 +1,16 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { TrendingUp, Calculator, DollarSign, Check } from 'lucide-react'
+import { TrendingUp, Calculator, DollarSign } from 'lucide-react'
+import { PLAN_CONFIGS } from '@/lib/plan-config'
+
+function CheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-500 flex-shrink-0" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  )
+}
 
 export default function LandingPage() {
   return (
@@ -72,44 +81,37 @@ export default function LandingPage() {
 
       {/* Pricing */}
       <section className="bg-gray-50 py-16 px-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Planes simples</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Free */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl">Gratis</CardTitle>
-                <p className="text-3xl font-bold">$0</p>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> 1 producto</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Calculadora completa</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Precio sugerido</li>
-                </ul>
-                <Link href="/auth/register" className="block mt-4">
-                  <Button variant="outline" className="w-full">Empezar gratis</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Pro */}
-            <Card className="border-2 border-gray-900">
-              <CardHeader>
-                <CardTitle className="text-2xl">Pro</CardTitle>
-                <p className="text-3xl font-bold">UYU 450<span className="text-base font-normal text-gray-500">/mes</span></p>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Productos ilimitados</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Simulador de precios</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Insights automáticos</li>
-                  <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" /> Soporte prioritario</li>
-                </ul>
-                <Link href="/pricing" className="block mt-4">
-                  <Button className="w-full">Ver Pro</Button>
-                </Link>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-3 gap-6">
+            {PLAN_CONFIGS.map((plan) => (
+              <Card key={plan.key} className={plan.borderClass}>
+                <CardHeader>
+                  <CardTitle className="text-2xl">{plan.label}</CardTitle>
+                  <p className="text-3xl font-bold">
+                    {plan.priceDisplay}
+                    {plan.priceSuffix && (
+                      <span className="text-base font-normal text-gray-500">{plan.priceSuffix}</span>
+                    )}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <ul className="space-y-2 text-gray-600">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2">
+                        <CheckIcon />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={plan.key === 'free' ? '/auth/register' : '/pricing'} className="block mt-4">
+                    <Button variant={plan.key === 'free' ? 'outline' : 'default'} className="w-full">
+                      {plan.key === 'free' ? 'Empezar gratis' : `Ver ${plan.label}`}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

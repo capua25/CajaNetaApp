@@ -87,7 +87,6 @@ export function FixedCostManager() {
       setName('')
       setAmount('')
       setRecurrence('monthly')
-      await fetchCosts()
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -139,7 +138,6 @@ export function FixedCostManager() {
         throw new Error(data.error ?? 'Error al guardar')
       }
       setEditState(null)
-      await fetchCosts()
       router.refresh()
     } catch (err) {
       setEditError(err instanceof Error ? err.message : 'Error desconocido')
@@ -158,7 +156,6 @@ export function FixedCostManager() {
         const data = await res.json()
         throw new Error(data.error ?? 'Error al eliminar')
       }
-      await fetchCosts()
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')

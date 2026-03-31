@@ -8,9 +8,10 @@ import { Check, X } from 'lucide-react'
 interface UpgradeModalProps {
   isOpen: boolean
   onClose: () => void
+  plan: 'free' | 'plus'
 }
 
-export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
+export function UpgradeModal({ isOpen, onClose, plan }: UpgradeModalProps) {
   const router = useRouter()
 
   if (!isOpen) return null
@@ -25,9 +26,13 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
           <X className="h-5 w-5" />
         </button>
         <CardHeader>
-          <CardTitle className="text-xl">Límite del plan gratuito</CardTitle>
+          <CardTitle className="text-xl">
+            {plan === 'free' ? 'Límite del plan gratuito' : 'Límite del plan Plus'}
+          </CardTitle>
           <p className="text-gray-600">
-            Ya usaste tu producto gratuito. Pasate a Pro para agregar productos ilimitados.
+            {plan === 'free'
+              ? 'Ya usaste tu producto gratuito. Elegí Plus (200 productos) o Pro (ilimitados).'
+              : 'Llegaste al límite de 200 productos de tu plan Plus. Pasate a Pro para productos ilimitados.'}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -38,7 +43,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
           </ul>
           <div className="flex gap-3">
             <Button className="flex-1" onClick={() => router.push('/pricing')}>
-              Ver planes — UYU 450/mes
+              Ver planes
             </Button>
             <Button variant="outline" onClick={onClose}>
               Ahora no

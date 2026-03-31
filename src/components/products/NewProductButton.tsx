@@ -8,9 +8,10 @@ import { Plus } from 'lucide-react'
 
 interface NewProductButtonProps {
   isFreeLimitReached: boolean
+  plan: 'free' | 'plus'
 }
 
-export function NewProductButton({ isFreeLimitReached }: NewProductButtonProps) {
+export function NewProductButton({ isFreeLimitReached, plan }: NewProductButtonProps) {
   const [showModal, setShowModal] = useState(false)
 
   if (isFreeLimitReached) {
@@ -20,7 +21,7 @@ export function NewProductButton({ isFreeLimitReached }: NewProductButtonProps) 
           <Plus className="h-4 w-4 mr-2" />
           Nuevo producto
         </Button>
-        <UpgradeModal isOpen={showModal} onClose={() => setShowModal(false)} />
+        <UpgradeModal isOpen={showModal} onClose={() => setShowModal(false)} plan={plan} />
       </>
     )
   }

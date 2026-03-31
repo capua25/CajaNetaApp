@@ -1,9 +1,7 @@
-'use client'
-
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { LogoutButton } from '@/components/layout/LogoutButton'
 import type { User } from '@supabase/supabase-js'
 
 interface NavbarProps {
@@ -11,20 +9,11 @@ interface NavbarProps {
 }
 
 export function Navbar({ user }: NavbarProps) {
-  const router = useRouter()
-
-  async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
-  }
-
   return (
     <nav className="border-b bg-white">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-gray-900">
-          Caja Neta
+        <Link href="/">
+          <Image src="/CajaNetaLogo2.svg" alt="Caja Neta" width={120} height={32} priority />
         </Link>
         <div className="flex items-center gap-3">
           {user ? (
@@ -32,9 +21,7 @@ export function Navbar({ user }: NavbarProps) {
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                Salir
-              </Button>
+              <LogoutButton />
             </>
           ) : (
             <>

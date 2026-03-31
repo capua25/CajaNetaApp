@@ -76,7 +76,6 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
 
     const saved = await res.json()
     router.push(`/product/${saved.id}`)
-    router.refresh()
   }
 
   return (

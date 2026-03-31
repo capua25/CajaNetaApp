@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { PLAN_LIMITS } from '@/lib/plan-config'
+import type { Plan } from '@/lib/types'
 
 export async function GET() {
   const supabase = await createClient()
@@ -36,13 +38,15 @@ export async function POST(request: Request) {
     .eq('id', user.id)
     .single()
 
-  if (profile?.plan === 'free') {
+  const plan = (profile?.plan ?? 'free') as Plan
+  const limit = PLAN_LIMITS[plan] ?? 1
+  if (limit !== Infinity) {
     const { count } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id)
 
-    if ((count ?? 0) >= 1) {
+    if ((count ?? 0) >= limit) {
       return NextResponse.json({ error: 'PLAN_LIMIT_REACHED' }, { status: 403 })
     }
   }

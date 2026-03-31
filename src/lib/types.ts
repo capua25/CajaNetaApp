@@ -1,4 +1,4 @@
-export type Plan = 'free' | 'pro'
+export type Plan = 'free' | 'plus' | 'pro'
 
 export type ProductStatus = 'success' | 'warning' | 'danger'
 

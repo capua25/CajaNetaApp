@@ -82,7 +82,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       </MetricCard>
 
       {/* MC Mix */}
-      <MetricCard title="Margen de Contribución Mix" tooltip="Cuánto contribuye en promedio cada unidad vendida a cubrir tus costos fijos, ponderado por las cantidades de cada producto. Fórmula: mc = precio − costo variable.">
+      <MetricCard title="Margen de Contribución Mix" tooltip="Cuánto contribuye en promedio cada unidad vendida a cubrir tus costos fijos, ponderado por las cantidades de cada producto.">
         {mc_mix !== null ? (
           <p className="text-2xl font-bold">{formatCurrency(mc_mix)}</p>
         ) : (
@@ -98,7 +98,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       </MetricCard>
 
       {/* Punto de Equilibrio (unidades) */}
-      <MetricCard title="Punto de Equilibrio (unidades)" tooltip="Cantidad de unidades que tenés que vender para no ganar ni perder. Por debajo de este número estás perdiendo plata. Fórmula: Qe = Costos Fijos / mc mix.">
+      <MetricCard title="Punto de Equilibrio (unidades)" tooltip="Cantidad de unidades que tenés que vender para no ganar ni perder. Por debajo de este número estás perdiendo plata.">
         {break_even_units !== null ? (
           <p className="text-2xl font-bold">{formatNumber(break_even_units, 1)} u.</p>
         ) : (
@@ -107,7 +107,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       </MetricCard>
 
       {/* Punto de Equilibrio (ingresos) */}
-      <MetricCard title="Punto de Equilibrio (ingresos)" tooltip="Cuánta plata en ventas necesitás para cubrir exactamente todos tus costos. Fórmula: Ve = Costos Fijos / ratio de contribución mix.">
+      <MetricCard title="Punto de Equilibrio (ingresos)" tooltip="Cuánta plata en ventas necesitás para cubrir exactamente todos tus costos.">
         {break_even_revenue !== null ? (
           <p className="text-2xl font-bold">{formatCurrency(break_even_revenue)}</p>
         ) : (
@@ -132,7 +132,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       </MetricCard>
 
       {/* Margen de Seguridad */}
-      <MetricCard title="Margen de Seguridad" tooltip="Cuánto pueden caer tus ventas antes de entrar en pérdida. Verde > 20%: estás bien. Amarillo 10–20%: cuidado. Rojo < 10%: zona de riesgo. Fórmula: MS = (Ventas − Equilibrio) / Ventas.">
+      <MetricCard title="Margen de Seguridad" tooltip="Cuánto pueden caer tus ventas antes de entrar en pérdida. Verde > 20%: estás bien. Amarillo 10–20%: cuidado. Rojo < 10%: zona de riesgo.">
         {margin_of_safety !== null ? (
           <p className={`text-2xl font-bold ${safetyMarginColor(margin_of_safety)}`}>
             {formatNumber(margin_of_safety * 100, 1)}%

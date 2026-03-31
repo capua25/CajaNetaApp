@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ProductList } from '@/components/products/ProductList'
 import { NewProductButton } from '@/components/products/NewProductButton'
-import type { UserProfile, Product } from '@/lib/types'
+import { PLAN_LIMITS } from '@/lib/plan-config'
+import type { UserProfile, Product, Plan } from '@/lib/types'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -20,7 +21,9 @@ export default async function DashboardPage() {
 
   const userProfile = profile as UserProfile | null
   const productList = (products ?? []) as Product[]
-  const isFreeLimitReached = userProfile?.plan === 'free' && productList.length >= 1
+  const plan = (userProfile?.plan ?? 'free') as Plan
+  const limit = PLAN_LIMITS[plan]
+  const isFreeLimitReached = limit !== Infinity && productList.length >= limit
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
@@ -38,7 +41,7 @@ export default async function DashboardPage() {
               </Button>
             </Link>
           )}
-          <NewProductButton isFreeLimitReached={isFreeLimitReached} />
+          <NewProductButton isFreeLimitReached={isFreeLimitReached} plan={plan === 'pro' ? 'free' : plan} />
         </div>
       </div>
 
