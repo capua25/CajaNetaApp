@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ProductList } from '@/components/products/ProductList'
 import { NewProductButton } from '@/components/products/NewProductButton'
-import { BillingCard } from '@/components/billing/BillingCard'
 import { PLAN_LIMITS } from '@/lib/plan-config'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
@@ -45,14 +44,6 @@ export default async function DashboardPage() {
           <NewProductButton isFreeLimitReached={isFreeLimitReached} plan={plan === 'pro' ? 'free' : plan} />
         </div>
       </div>
-
-      {userProfile && userProfile.plan !== 'free' && (
-        <BillingCard
-          plan={userProfile.plan}
-          planStatus={userProfile.plan_status}
-          mpSubscriptionId={userProfile.mp_subscription_id ?? null}
-        />
-      )}
 
       {productList.length === 0 ? (
         <div className="text-center py-20 text-gray-500">

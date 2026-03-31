@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getPreapprovalPlan } from '@/lib/mercadopago'
+import { createPreapproval } from '@/lib/mercadopago'
 import type { Plan } from '@/lib/types'
 
 const MP_PLAN_ID_KEY: Record<'plus' | 'pro', string> = {
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   // Check user is not already on this plan
   const { data: profile } = await supabase
     .from('users')
-    .select('plan')
+    .select('plan, email')
     .eq('id', user.id)
     .single()
 
@@ -47,10 +47,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'ALREADY_ON_PLAN' }, { status: 409 })
   }
 
+  const userEmail = profile?.email ?? user.email
+  if (!userEmail) {
+    return NextResponse.json({ error: 'USER_EMAIL_MISSING' }, { status: 400 })
+  }
+
   const planId = process.env[MP_PLAN_ID_KEY[plan]]!
+  const backUrl = process.env.MP_BACK_URL ?? 'https://cajanetaapp.com/dashboard/cuenta'
 
   try {
-    const { init_point } = await getPreapprovalPlan(planId)
+    const { init_point } = await createPreapproval({
+      planId,
+      payerEmail: userEmail,
+      externalReference: user.id,
+      backUrl,
+    })
     return NextResponse.json({ init_point })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

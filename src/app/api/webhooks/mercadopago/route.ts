@@ -59,6 +59,8 @@ export async function POST(request: NextRequest) {
   let update: UserUpdate | null = null
   if (preapproval.status === 'authorized' && mappedPlan) {
     update = { plan: mappedPlan, plan_status: 'active', mp_subscription_id: subscriptionId }
+  } else if (preapproval.status === 'pending') {
+    update = { plan_status: 'pending', mp_subscription_id: subscriptionId }
   } else if (preapproval.status === 'cancelled') {
     update = { plan: 'free', plan_status: 'cancelled' }
   } else if (preapproval.status === 'paused') {
@@ -82,7 +84,20 @@ export async function POST(request: NextRequest) {
 
   if (bySubId) {
     userId = bySubId.id
-  } else if (preapproval.payer_email) {
+  }
+
+  // 2. Por external_reference (suscripciones nuevas con external_reference=user.id)
+  if (!userId && preapproval.external_reference) {
+    const { data: byExtRef } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', preapproval.external_reference)
+      .maybeSingle()
+    if (byExtRef) userId = byExtRef.id
+  }
+
+  // 3. Por payer_email (fallback legacy)
+  if (!userId && preapproval.payer_email) {
     const { data: byEmail } = await supabase
       .from('users')
       .select('id')
@@ -92,7 +107,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!userId) {
-    console.warn('[webhook] Could not find user for subscription:', subscriptionId)
+    console.warn('[webhook] Could not find user for subscription:', subscriptionId, '| payer_email:', preapproval.payer_email)
     return NextResponse.json({ ok: true })
   }
 

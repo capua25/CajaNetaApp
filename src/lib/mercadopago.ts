@@ -8,6 +8,7 @@ export interface MPPreapproval {
   next_payment_date: string | null
   preapproval_plan_id: string
   payer_email: string
+  external_reference?: string
 }
 
 function getAccessToken(): string {
@@ -31,6 +32,44 @@ export async function getPreapprovalPlan(planId: string): Promise<{ init_point: 
 
   const data = await res.json()
   return { init_point: data.init_point }
+}
+
+export interface CreatePreapprovalParams {
+  planId: string
+  payerEmail: string
+  externalReference: string
+  backUrl: string
+}
+
+export interface CreatePreapprovalResult {
+  id: string
+  init_point: string
+}
+
+export async function createPreapproval(params: CreatePreapprovalParams): Promise<CreatePreapprovalResult> {
+  const token = getAccessToken()
+  const res = await fetch(`${MP_API}/preapproval`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      preapproval_plan_id: params.planId,
+      payer_email: params.payerEmail,
+      external_reference: params.externalReference,
+      back_url: params.backUrl,
+      status: 'pending',
+    }),
+  })
+
+  if (!res.ok) {
+    const detail = await res.text()
+    console.error('[MP] createPreapproval error:', res.status, detail)
+    throw new Error(`MP_API_ERROR: ${detail}`)
+  }
+
+  return await res.json()
 }
 
 export async function getPreapproval(id: string): Promise<MPPreapproval> {

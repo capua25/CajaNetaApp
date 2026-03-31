@@ -21,6 +21,9 @@ export function Navbar({ user }: NavbarProps) {
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
+              <Link href="/dashboard/cuenta">
+                <Button variant="ghost" size="sm">Mi cuenta</Button>
+              </Link>
               <LogoutButton />
             </>
           ) : (
