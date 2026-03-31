@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getPreapproval } from '@/lib/mercadopago'
 import { BillingCard } from '@/components/billing/BillingCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -8,7 +9,11 @@ import { Button } from '@/components/ui/button'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
 import type { UserProfile } from '@/lib/types'
 
-export default async function CuentaPage() {
+export default async function CuentaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ preapproval_id?: string }>
+}) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -22,6 +27,25 @@ export default async function CuentaPage() {
 
   const userProfile = profile as UserProfile | null
   if (!userProfile) redirect('/auth/login')
+
+  // MP redirects here after checkout with ?preapproval_id=xxx
+  // Link the subscription to this user so the webhook can find them
+  const { preapproval_id } = await searchParams
+  if (preapproval_id && !userProfile.mp_subscription_id) {
+    try {
+      const preapproval = await getPreapproval(preapproval_id)
+      if (preapproval && preapproval.preapproval_plan_id) {
+        await supabase
+          .from('users')
+          .update({ mp_subscription_id: preapproval_id, plan_status: 'pending' })
+          .eq('id', user.id)
+        userProfile.mp_subscription_id = preapproval_id
+        userProfile.plan_status = 'pending'
+      }
+    } catch {
+      // Non-fatal — webhook will still handle the status update
+    }
+  }
 
   const { plan } = userProfile
 
