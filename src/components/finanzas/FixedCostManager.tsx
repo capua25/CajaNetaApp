@@ -44,6 +44,7 @@ export function FixedCostManager() {
   const [editState, setEditState] = useState<EditState | null>(null)
   const [editSubmitting, setEditSubmitting] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchCosts()
@@ -148,6 +149,7 @@ export function FixedCostManager() {
 
   async function handleDelete(id: string) {
     setError(null)
+    setDeletingId(id)
     try {
       const res = await fetch(`/api/fixed-costs?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
@@ -159,6 +161,8 @@ export function FixedCostManager() {
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -321,8 +325,9 @@ export function FixedCostManager() {
                             size="sm"
                             className="text-destructive hover:text-destructive"
                             onClick={() => handleDelete(cost.id)}
+                            disabled={deletingId === cost.id}
                           >
-                            Eliminar
+                            {deletingId === cost.id ? 'Eliminando...' : 'Eliminar'}
                           </Button>
                         </div>
                       </td>

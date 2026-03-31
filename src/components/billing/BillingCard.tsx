@@ -22,6 +22,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: 'default' | 'second
 export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId }: BillingCardProps) {
   const [nextPaymentDate, setNextPaymentDate] = useState<string | null>(null)
   const [planStatus, setPlanStatus] = useState(initialStatus)
+  const [statusLoading, setStatusLoading] = useState(!!mpSubscriptionId)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)
 
@@ -35,6 +36,7 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
         if (data.plan_status) setPlanStatus(data.plan_status)
       })
       .catch(() => undefined)
+      .finally(() => setStatusLoading(false))
   }, [mpSubscriptionId])
 
   async function handleCancel() {
@@ -78,11 +80,17 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Estado</span>
-          <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+          {statusLoading
+            ? <span className="h-5 w-16 rounded bg-gray-200 animate-pulse inline-block" />
+            : <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+          }
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Próximo cobro</span>
-          <span className="font-medium">{formattedDate}</span>
+          {statusLoading
+            ? <span className="h-4 w-24 rounded bg-gray-200 animate-pulse inline-block" />
+            : <span className="font-medium">{formattedDate}</span>
+          }
         </div>
 
         {planStatus === 'active' && (
