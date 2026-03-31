@@ -68,7 +68,7 @@ export function ProductMixTable({ products, has_quantity_data }: ProductMixTable
                 <td className="px-4 py-3 font-medium">{p.name}</td>
                 <td className="px-4 py-3 text-right">{formatCurrency(p.price)}</td>
                 <td className="px-4 py-3 text-right">{formatCurrency(p.cv)}</td>
-                <td className={`px-4 py-3 text-right font-medium ${p.mc > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <td className={`px-4 py-3 text-right font-medium ${(p.mc ?? 0) > 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {formatCurrency(p.mc)}
                 </td>
                 <td className="px-4 py-3 text-right">{formatPct(p.rc)}</td>

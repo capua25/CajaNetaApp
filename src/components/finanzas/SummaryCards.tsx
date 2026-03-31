@@ -35,7 +35,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, tooltip, children }: MetricCardProps) {
   return (
-    <Card>
+    <Card className="overflow-visible">
       <CardHeader>
         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
           {title}
