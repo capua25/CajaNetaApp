@@ -18,14 +18,17 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data: profileForEdit } = await supabase
-    .from('users')
-    .select('plan_status')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profileForEdit }, { count: productCount }] = await Promise.all([
+    supabase.from('users').select('plan, plan_status').eq('id', user.id).single(),
+    supabase.from('products').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
 
   if (profileForEdit?.plan_status === 'cancelled') {
     return NextResponse.json({ error: 'SUBSCRIPTION_CANCELLED' }, { status: 403 })
+  }
+
+  if (profileForEdit?.plan === 'free' && (productCount ?? 0) > 1) {
+    return NextResponse.json({ error: 'FREE_PLAN_OVER_LIMIT' }, { status: 403 })
   }
 
   const body = await request.json()
@@ -89,13 +92,12 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('plan, plan_status')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, { count: productCount }] = await Promise.all([
+    supabase.from('users').select('plan').eq('id', user.id).single(),
+    supabase.from('products').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
 
-  if (profile?.plan === 'free') {
+  if (profile?.plan === 'free' && (productCount ?? 0) <= 1) {
     return NextResponse.json({ error: 'FREE_PLAN_CANNOT_DELETE' }, { status: 403 })
   }
 

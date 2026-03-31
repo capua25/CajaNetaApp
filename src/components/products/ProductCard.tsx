@@ -10,13 +10,17 @@ interface ProductCardProps {
   product: Product
   isFreePlan: boolean
   planStatus?: string
+  totalProducts?: number
 }
 
 const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
-export function ProductCard({ product, isFreePlan, planStatus }: ProductCardProps) {
+export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1 }: ProductCardProps) {
   const isCancelled = planStatus === 'cancelled'
+  const freeOverLimit = isFreePlan && totalProducts > 1
+  const canEdit = !isCancelled && !freeOverLimit
+  const canDelete = !isFreePlan || freeOverLimit
   const result = calculate(product)
 
   return (
@@ -29,16 +33,19 @@ export function ProductCard({ product, isFreePlan, planStatus }: ProductCardProp
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={result.status} />
-            {isCancelled ? (
-              <span title="Reactivá tu suscripción para editar productos" className="text-gray-200 cursor-not-allowed">
-                <Pencil className="h-4 w-4" />
-              </span>
-            ) : (
+            {canEdit ? (
               <Link href={`/product/${product.id}/edit`} className="text-gray-400 hover:text-gray-600">
                 <Pencil className="h-4 w-4" />
               </Link>
+            ) : (
+              <span
+                title={freeOverLimit ? 'Eliminá productos hasta llegar al límite del plan gratuito para poder editar' : 'Reactivá tu suscripción para editar productos'}
+                className="text-gray-200 cursor-not-allowed"
+              >
+                <Pencil className="h-4 w-4" />
+              </span>
             )}
-            <DeleteProductButton productId={product.id} disabled={isFreePlan} />
+            <DeleteProductButton productId={product.id} disabled={!canDelete} />
           </div>
         </div>
       </CardHeader>
