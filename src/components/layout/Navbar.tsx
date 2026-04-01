@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function Navbar() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
   return (
     <nav className="border-b bg-white">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
