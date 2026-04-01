@@ -17,9 +17,8 @@ const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
 export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1 }: ProductCardProps) {
-  const isCancelled = planStatus === 'cancelled'
   const freeOverLimit = isFreePlan && totalProducts > 1
-  const canEdit = !isCancelled && !freeOverLimit
+  const canEdit = !freeOverLimit
   const canDelete = !isFreePlan || freeOverLimit
   const result = calculate(product)
 
@@ -39,7 +38,7 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
               </Link>
             ) : (
               <span
-                title={freeOverLimit ? 'Eliminá productos hasta llegar al límite del plan gratuito para poder editar' : 'Reactivá tu suscripción para editar productos'}
+                title="Eliminá productos hasta llegar al límite del plan gratuito para poder editar"
                 className="text-gray-200 cursor-not-allowed"
               >
                 <Pencil className="h-4 w-4" />
