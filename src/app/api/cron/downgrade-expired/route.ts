@@ -4,11 +4,13 @@ import { createServiceClient } from '@/lib/supabase/service'
 
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET
-  if (secret) {
-    const auth = request.headers.get('authorization')
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  if (!secret) {
+    console.error('[cron/downgrade-expired] CRON_SECRET is not set')
+    return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+  }
+  const auth = request.headers.get('authorization')
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const supabase = createServiceClient()

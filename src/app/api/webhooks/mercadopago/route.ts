@@ -97,14 +97,8 @@ export async function POST(request: NextRequest) {
     if (byExtRef) userId = byExtRef.id
   }
 
-  // 3. Por payer_email (fallback legacy)
   if (!userId && preapproval.payer_email) {
-    const { data: byEmail } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', preapproval.payer_email)
-      .maybeSingle()
-    if (byEmail) userId = byEmail.id
+    console.warn('[webhook] Could not find user by subscription_id or external_reference. Email fallback skipped for:', preapproval.payer_email)
   }
 
   if (!userId) {

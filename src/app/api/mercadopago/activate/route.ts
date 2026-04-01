@@ -15,8 +15,10 @@ export async function POST(request: NextRequest) {
   if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const preapprovalId: string = body.preapproval_id
-  if (!preapprovalId) return NextResponse.json({ error: 'Missing preapproval_id' }, { status: 400 })
+  const preapprovalId = typeof body.preapproval_id === 'string' ? body.preapproval_id.trim() : ''
+  if (!preapprovalId || !/^[a-zA-Z0-9_-]{10,60}$/.test(preapprovalId)) {
+    return NextResponse.json({ error: 'Invalid preapproval_id' }, { status: 400 })
+  }
 
   const { data: profile } = await supabase
     .from('users')
@@ -34,6 +36,10 @@ export async function POST(request: NextRequest) {
     preapproval = await getPreapproval(preapprovalId)
   } catch {
     return NextResponse.json({ error: 'MP_UNREACHABLE' }, { status: 503 })
+  }
+
+  if (preapproval.external_reference !== user.id) {
+    return NextResponse.json({ error: 'PREAPPROVAL_MISMATCH' }, { status: 403 })
   }
 
   if (preapproval.status !== 'authorized') {

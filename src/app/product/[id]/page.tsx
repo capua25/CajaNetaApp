@@ -20,6 +20,7 @@ export default async function ProductPage({
     .from('products')
     .select('*')
     .eq('id', id)
+    .eq('user_id', user.id)
     .single()
 
   if (error || !product) notFound()
