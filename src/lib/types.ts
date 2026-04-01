@@ -55,6 +55,7 @@ export interface CalculationResult {
   margin: number
   status: ProductStatus
   suggested_price: number
+  monthly_profit: number
 }
 
 export interface UserProfile {

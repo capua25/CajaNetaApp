@@ -18,20 +18,27 @@ export function calcSuggestedPrice(costTotal: number, desiredMargin: number): nu
   return costTotal / (1 - desiredMargin)
 }
 
-export function calcStatus(margin: number): ProductStatus {
-  if (margin >= 0.3) return 'success'
-  if (margin >= 0.1) return 'warning'
+export function calcStatus(
+  margin: number,
+  desiredMargin: number,
+  quantitySold: number
+): ProductStatus {
+  if (margin < 0) return 'danger'
+  if (quantitySold === 0) return 'warning'
+  if (margin >= desiredMargin) return 'success'
+  if (margin >= desiredMargin * 0.7) return 'warning'
   return 'danger'
 }
 
 export function calculate(
-  product: Pick<Product, 'cost' | 'expenses' | 'price' | 'desired_margin'>
+  product: Pick<Product, 'cost' | 'expenses' | 'price' | 'desired_margin' | 'quantity_sold'>
 ): CalculationResult {
   const cost_total = calcCostTotal(product.cost, product.expenses)
   const profit = calcProfit(product.price, cost_total)
   const margin = calcMargin(profit, product.price)
-  const status = calcStatus(margin)
+  const status = calcStatus(margin, product.desired_margin, product.quantity_sold)
   const suggested_price = calcSuggestedPrice(cost_total, product.desired_margin)
+  const monthly_profit = profit * product.quantity_sold
 
-  return { cost_total, profit, margin, status, suggested_price }
+  return { cost_total, profit, margin, status, suggested_price, monthly_profit }
 }

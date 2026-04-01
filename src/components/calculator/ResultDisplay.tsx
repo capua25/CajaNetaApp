@@ -12,10 +12,12 @@ interface ResultDisplayProps {
 const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
-const statusMessages = {
-  success: 'Este producto es rentable. Estás ganando bien.',
-  warning: 'Margen bajo. Considerá ajustar el precio o reducir costos.',
-  danger: 'Estás perdiendo plata con este producto.',
+function getStatusMessage(result: CalculationResult, desiredMargin: number): string {
+  if (result.margin < 0) return 'Estás vendiendo por debajo del costo.'
+  if (result.monthly_profit === 0) return 'Sin ventas registradas. El margen no refleja impacto real.'
+  if (result.status === 'success') return 'Estás cumpliendo tu objetivo de margen.'
+  if (result.status === 'warning') return 'Rentable, pero por debajo de tu objetivo de margen.'
+  return 'Margen muy alejado de tu objetivo.'
 }
 
 export function ResultDisplay({ product, result }: ResultDisplayProps) {
@@ -27,7 +29,7 @@ export function ResultDisplay({ product, result }: ResultDisplayProps) {
           <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge status={result.status} />
-            <span className="text-sm text-gray-500">{statusMessages[result.status]}</span>
+            <span className="text-sm text-gray-500">{getStatusMessage(result, product.desired_margin)}</span>
           </div>
         </div>
       </div>
@@ -89,6 +91,14 @@ export function ResultDisplay({ product, result }: ResultDisplayProps) {
               {formatUYU(result.profit)}
             </span>
           </div>
+          {result.monthly_profit > 0 && (
+            <div className="flex justify-between text-sm font-semibold border-t pt-2">
+              <span>Aporte mensual</span>
+              <span className={`font-semibold ${result.monthly_profit > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {formatUYU(result.monthly_profit)}
+              </span>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -40,9 +40,15 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
   const preview = useMemo(
     () =>
       numPrice > 0
-        ? calculate({ cost: numCost, expenses: numExpenses, price: numPrice, desired_margin: numMargin })
+        ? calculate({
+            cost: numCost,
+            expenses: numExpenses,
+            price: numPrice,
+            desired_margin: numMargin,
+            quantity_sold: Number(quantitySold) || 0,
+          })
         : null,
-    [numCost, numExpenses, numPrice, numMargin]
+    [numCost, numExpenses, numPrice, numMargin, quantitySold]
   )
 
   async function handleSubmit(e: React.FormEvent) {

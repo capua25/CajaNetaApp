@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   const [{ data: profile }, { data: products }] = await Promise.all([
     supabase.from('users').select('*').eq('id', user.id).single(),
-    supabase.from('products').select('id, name, cost, expenses, price, desired_margin').eq('user_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('products').select('id, name, cost, expenses, price, desired_margin, quantity_sold').eq('user_id', user.id).order('created_at', { ascending: false }),
   ])
 
   const userProfile = profile as UserProfile | null
