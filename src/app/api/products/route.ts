@@ -22,7 +22,9 @@ export async function GET() {
     return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
-  return NextResponse.json(products)
+  return NextResponse.json(products, {
+    headers: { 'Cache-Control': 'private, max-age=60' },
+  })
 }
 
 export async function POST(request: Request) {

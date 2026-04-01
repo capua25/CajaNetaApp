@@ -16,11 +16,11 @@ export default async function DashboardPage() {
 
   const [{ data: profile }, { data: products }] = await Promise.all([
     supabase.from('users').select('*').eq('id', user.id).single(),
-    supabase.from('products').select('*').order('created_at', { ascending: false }),
+    supabase.from('products').select('id, name, cost, expenses, price, desired_margin').order('created_at', { ascending: false }),
   ])
 
   const userProfile = profile as UserProfile | null
-  const productList = (products ?? []) as Product[]
+  const productList = (products ?? []) as unknown as Product[]
   const plan = (userProfile?.plan ?? 'free') as Plan
   const limit = PLAN_LIMITS[plan]
   const isFreeLimitReached = limit !== Infinity && productList.length >= limit

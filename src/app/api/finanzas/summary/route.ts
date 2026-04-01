@@ -56,5 +56,7 @@ export async function GET() {
     (fixedCosts ?? []) as FixedCost[]
   )
 
-  return NextResponse.json(summary)
+  return NextResponse.json(summary, {
+    headers: { 'Cache-Control': 'private, max-age=30' },
+  })
 }
