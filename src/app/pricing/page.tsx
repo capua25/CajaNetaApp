@@ -15,7 +15,8 @@ function CheckIcon() {
 
 export default async function PricingPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
 
   let userPlan: Plan | null = null
   let userPlanStatus: string = 'free'
