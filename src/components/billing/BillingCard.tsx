@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,24 +20,9 @@ const STATUS_BADGE: Record<string, { label: string; variant: 'default' | 'second
 }
 
 export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId }: BillingCardProps) {
-  const [nextPaymentDate, setNextPaymentDate] = useState<string | null>(null)
   const [planStatus, setPlanStatus] = useState(initialStatus)
-  const [statusLoading, setStatusLoading] = useState(!!mpSubscriptionId)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!mpSubscriptionId) return
-
-    fetch('/api/mercadopago/status')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.next_payment_date) setNextPaymentDate(data.next_payment_date)
-        if (data.plan_status) setPlanStatus(data.plan_status)
-      })
-      .catch(() => undefined)
-      .finally(() => setStatusLoading(false))
-  }, [mpSubscriptionId])
 
   async function handleCancel() {
     setCancelling(true)
@@ -60,14 +45,6 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
   const planConfig = PLAN_CONFIGS.find((p) => p.key === plan)
   const statusConfig = STATUS_BADGE[planStatus] ?? { label: planStatus, variant: 'outline' as const }
 
-  const formattedDate = nextPaymentDate
-    ? new Date(nextPaymentDate).toLocaleDateString('es-UY', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-    : '—'
-
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -80,17 +57,7 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Estado</span>
-          {statusLoading
-            ? <span className="h-5 w-16 rounded bg-gray-200 animate-pulse inline-block" />
-            : <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
-          }
-        </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">Próximo cobro</span>
-          {statusLoading
-            ? <span className="h-4 w-24 rounded bg-gray-200 animate-pulse inline-block" />
-            : <span className="font-medium">{formattedDate}</span>
-          }
+          <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
         </div>
 
         {planStatus === 'active' && (

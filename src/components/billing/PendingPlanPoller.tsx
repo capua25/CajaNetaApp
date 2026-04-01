@@ -5,36 +5,41 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
-const POLL_INTERVAL_MS = 3000
-const MAX_RETRIES = 20 // ~1 minuto máximo — después se asume pago diferido (redes de cobranza, etc.)
+const BACKOFF_DELAYS = [2000, 3000, 5000, 8000, 13000, 21000, 34000]
 
 export function PendingPlanPoller() {
   const router = useRouter()
-  const retries = useRef(0)
+  const indexRef = useRef(0)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [timedOut, setTimedOut] = useState(false)
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      retries.current += 1
-      if (retries.current > MAX_RETRIES) {
-        clearInterval(interval)
-        setTimedOut(true)
-        return
-      }
-
+    async function poll() {
       try {
         const res = await fetch('/api/mercadopago/status')
         const data: { plan?: string } = await res.json()
         if (data.plan && data.plan !== 'free') {
-          clearInterval(interval)
           router.refresh()
+          return
         }
       } catch {
         // ignorar, seguir intentando
       }
-    }, POLL_INTERVAL_MS)
 
-    return () => clearInterval(interval)
+      const nextIndex = indexRef.current + 1
+      if (nextIndex >= BACKOFF_DELAYS.length) {
+        setTimedOut(true)
+        return
+      }
+      indexRef.current = nextIndex
+      timeoutRef.current = setTimeout(poll, BACKOFF_DELAYS[nextIndex])
+    }
+
+    timeoutRef.current = setTimeout(poll, BACKOFF_DELAYS[0])
+
+    return () => {
+      if (timeoutRef.current !== null) clearTimeout(timeoutRef.current)
+    }
   }, [router])
 
   return (
