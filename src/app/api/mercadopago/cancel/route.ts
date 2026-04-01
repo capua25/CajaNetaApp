@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { cancelPreapproval } from '@/lib/mercadopago'
+import { cancelPreapproval, getPreapproval } from '@/lib/mercadopago'
 import type { UserProfile } from '@/lib/types'
 
 export async function POST() {
@@ -27,6 +27,14 @@ export async function POST() {
     return NextResponse.json({ error: 'NO_ACTIVE_SUBSCRIPTION' }, { status: 409 })
   }
 
+  let expiresAt: string | null = null
+  try {
+    const preapproval = await getPreapproval(mp_subscription_id)
+    expiresAt = preapproval.next_payment_date ?? null
+  } catch {
+    // proceed without expiry date
+  }
+
   try {
     await cancelPreapproval(mp_subscription_id)
   } catch (err) {
@@ -36,7 +44,7 @@ export async function POST() {
 
   const { error: updateError } = await supabase
     .from('users')
-    .update({ plan: 'free', plan_status: 'cancelled' })
+    .update({ plan_status: 'cancelled', plan_expires_at: expiresAt })
     .eq('id', user.id)
 
   if (updateError) {

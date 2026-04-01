@@ -63,4 +63,5 @@ export interface UserProfile {
   plan: Plan
   plan_status: string
   mp_subscription_id: string | null
+  plan_expires_at: string | null
 }

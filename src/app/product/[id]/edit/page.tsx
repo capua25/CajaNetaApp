@@ -15,13 +15,10 @@ export default async function EditProductPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [{ data: product }, { data: profile }] = await Promise.all([
-    supabase.from('products').select('*').eq('id', id).eq('user_id', user.id).single(),
-    supabase.from('users').select('plan_status').eq('id', user.id).single(),
-  ])
+  const { data: product } = await supabase
+    .from('products').select('*').eq('id', id).eq('user_id', user.id).single()
 
   if (!product) redirect('/dashboard')
-  if (profile?.plan_status === 'cancelled') redirect(`/product/${id}`)
 
   return (
     <div className="container mx-auto px-4 py-8">

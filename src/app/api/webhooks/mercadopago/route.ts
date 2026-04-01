@@ -54,15 +54,16 @@ export async function POST(request: NextRequest) {
     plan_status: string
     plan?: Plan
     mp_subscription_id?: string
+    plan_expires_at?: string | null
   }
 
   let update: UserUpdate | null = null
   if (preapproval.status === 'authorized' && mappedPlan) {
-    update = { plan: mappedPlan, plan_status: 'active', mp_subscription_id: subscriptionId }
+    update = { plan: mappedPlan, plan_status: 'active', mp_subscription_id: subscriptionId, plan_expires_at: null }
   } else if (preapproval.status === 'pending') {
     update = { plan_status: 'pending', mp_subscription_id: subscriptionId }
   } else if (preapproval.status === 'cancelled') {
-    update = { plan: 'free', plan_status: 'cancelled' }
+    update = { plan_status: 'cancelled', plan_expires_at: preapproval.next_payment_date ?? null }
   } else if (preapproval.status === 'paused') {
     update = { plan_status: 'paused' }
   }

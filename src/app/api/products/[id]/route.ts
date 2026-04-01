@@ -19,13 +19,9 @@ export async function PATCH(
   }
 
   const [{ data: profileForEdit }, { count: productCount }] = await Promise.all([
-    supabase.from('users').select('plan, plan_status').eq('id', user.id).single(),
+    supabase.from('users').select('plan').eq('id', user.id).single(),
     supabase.from('products').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ])
-
-  if (profileForEdit?.plan_status === 'cancelled') {
-    return NextResponse.json({ error: 'SUBSCRIPTION_CANCELLED' }, { status: 403 })
-  }
 
   if (profileForEdit?.plan === 'free' && (productCount ?? 0) > 1) {
     return NextResponse.json({ error: 'FREE_PLAN_OVER_LIMIT' }, { status: 403 })
