@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -32,6 +33,7 @@ interface FixedCostManagerProps {
 }
 
 export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
+  const router = useRouter()
   const [costs, setCosts] = useState<FixedCost[]>(initialCosts)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -73,6 +75,7 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
       setAmount('')
       setRecurrence('monthly')
       setCosts(prev => [newCost, ...prev])
+      router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -125,6 +128,7 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
       const updated: FixedCost = await res.json()
       setEditState(null)
       setCosts(prev => prev.map(c => c.id === updated.id ? updated : c))
+      router.refresh()
     } catch (err) {
       setEditError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -144,6 +148,7 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
         throw new Error(data.error ?? 'Error al eliminar')
       }
       setCosts(prev => prev.filter(c => c.id !== id))
+      router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
