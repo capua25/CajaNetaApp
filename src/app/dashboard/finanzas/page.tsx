@@ -54,7 +54,7 @@ export default async function FinanzasPage() {
 
       <SummaryCards summary={summary} />
 
-      <FixedCostManager />
+      <FixedCostManager initialCosts={fixedCosts ?? []} />
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Mix de productos</h2>

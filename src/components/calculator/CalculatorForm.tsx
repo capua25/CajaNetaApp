@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,9 +37,13 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
   const numPrice = Number(price) || 0
   const numMargin = (Number(desiredMargin) || 30) / 100
 
-  const preview = numPrice > 0
-    ? calculate({ cost: numCost, expenses: numExpenses, price: numPrice, desired_margin: numMargin })
-    : null
+  const preview = useMemo(
+    () =>
+      numPrice > 0
+        ? calculate({ cost: numCost, expenses: numExpenses, price: numPrice, desired_margin: numMargin })
+        : null,
+    [numCost, numExpenses, numPrice, numMargin]
+  )
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

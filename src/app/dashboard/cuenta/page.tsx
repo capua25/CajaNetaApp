@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getPreapproval } from '@/lib/mercadopago'
 import { BillingCard } from '@/components/billing/BillingCard'
 import { PendingPlanPoller } from '@/components/billing/PendingPlanPoller'
+import { PreapprovalActivator } from '@/components/billing/PreapprovalActivator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
-import type { Plan, UserProfile } from '@/lib/types'
+import type { UserProfile } from '@/lib/types'
 
 export default async function CuentaPage({
   searchParams,
@@ -29,45 +29,15 @@ export default async function CuentaPage({
   const userProfile = profile as UserProfile | null
   if (!userProfile) redirect('/auth/login')
 
-  // MP redirects here after checkout with ?preapproval_id=xxx
-  // Activate immediately if already authorized, otherwise mark pending for webhook
   const { preapproval_id } = await searchParams
-  if (preapproval_id && !userProfile.mp_subscription_id) {
-    try {
-      const preapproval = await getPreapproval(preapproval_id)
-      if (preapproval?.preapproval_plan_id) {
-        const planMap: Record<string, Plan> = {
-          [process.env.MP_PLAN_ID_PLUS ?? '']: 'plus',
-          [process.env.MP_PLAN_ID_PRO ?? '']: 'pro',
-        }
-        const mappedPlan = planMap[preapproval.preapproval_plan_id]
-
-        if (preapproval.status === 'authorized' && mappedPlan) {
-          await supabase
-            .from('users')
-            .update({ mp_subscription_id: preapproval_id, plan_status: 'active', plan: mappedPlan })
-            .eq('id', user.id)
-          userProfile.mp_subscription_id = preapproval_id
-          userProfile.plan_status = 'active'
-          userProfile.plan = mappedPlan
-        } else {
-          await supabase
-            .from('users')
-            .update({ mp_subscription_id: preapproval_id, plan_status: 'pending' })
-            .eq('id', user.id)
-          userProfile.mp_subscription_id = preapproval_id
-          userProfile.plan_status = 'pending'
-        }
-      }
-    } catch {
-      // Non-fatal — webhook will still handle the status update
-    }
-  }
 
   const { plan } = userProfile
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+      {preapproval_id && !userProfile?.mp_subscription_id && (
+        <PreapprovalActivator preapprovalId={preapproval_id} />
+      )}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Mi cuenta</h1>
         <p className="text-gray-500 text-sm mt-1">{userProfile.email}</p>

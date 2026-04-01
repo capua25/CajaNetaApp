@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,10 +27,12 @@ interface EditState {
   recurrence: Recurrence
 }
 
-export function FixedCostManager() {
-  const router = useRouter()
-  const [costs, setCosts] = useState<FixedCost[]>([])
-  const [loading, setLoading] = useState(true)
+interface FixedCostManagerProps {
+  initialCosts: FixedCost[]
+}
+
+export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
+  const [costs, setCosts] = useState<FixedCost[]>(initialCosts)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -45,24 +46,6 @@ export function FixedCostManager() {
   const [editSubmitting, setEditSubmitting] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetchCosts()
-  }, [])
-
-  async function fetchCosts() {
-    setLoading(true)
-    try {
-      const res = await fetch('/api/fixed-costs')
-      if (!res.ok) throw new Error('Error al cargar costos fijos')
-      const data = await res.json()
-      setCosts(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -85,10 +68,11 @@ export function FixedCostManager() {
         const data = await res.json()
         throw new Error(data.error ?? 'Error al guardar')
       }
+      const newCost: FixedCost = await res.json()
       setName('')
       setAmount('')
       setRecurrence('monthly')
-      router.refresh()
+      setCosts(prev => [newCost, ...prev])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -138,8 +122,9 @@ export function FixedCostManager() {
         const data = await res.json()
         throw new Error(data.error ?? 'Error al guardar')
       }
+      const updated: FixedCost = await res.json()
       setEditState(null)
-      router.refresh()
+      setCosts(prev => prev.map(c => c.id === updated.id ? updated : c))
     } catch (err) {
       setEditError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -158,7 +143,7 @@ export function FixedCostManager() {
         const data = await res.json()
         throw new Error(data.error ?? 'Error al eliminar')
       }
-      router.refresh()
+      setCosts(prev => prev.filter(c => c.id !== id))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
@@ -222,9 +207,7 @@ export function FixedCostManager() {
         </form>
 
         {/* Costs list */}
-        {loading ? (
-          <p className="text-sm text-muted-foreground">Cargando...</p>
-        ) : costs.length === 0 ? (
+        {costs.length === 0 ? (
           <p className="text-sm text-muted-foreground italic">
             No hay costos fijos registrados.
           </p>
