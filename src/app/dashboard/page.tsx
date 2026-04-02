@@ -1,9 +1,7 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
+import { FinanzasButton } from '@/components/dashboard/FinanzasButton'
 import { PLAN_LIMITS } from '@/lib/plan-config'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
@@ -32,14 +30,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-gray-900">Mis productos</h1>
           <p className="text-gray-500 text-sm mt-1">{user.email}</p>
         </div>
-        {userProfile?.plan === 'pro' && (
-          <Link href="/dashboard/finanzas">
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
-              Finanzas Avanzadas
-              <Badge variant="default" className="text-xs">Pro</Badge>
-            </Button>
-          </Link>
-        )}
+        <FinanzasButton plan={plan} />
       </div>
 
       <DashboardProductsSection
