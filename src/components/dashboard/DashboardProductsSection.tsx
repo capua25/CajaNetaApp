@@ -53,7 +53,7 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus }: D
       />
 
       <Dialog open={modalMode !== null} onOpenChange={(open) => { if (!open) closeModal() }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-xl md:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{modalMode === 'edit' ? 'Editar producto' : selectedProduct?.name ?? ''}</DialogTitle>
             <DialogDescription className="sr-only">
