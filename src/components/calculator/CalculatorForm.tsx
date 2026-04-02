@@ -20,7 +20,7 @@ interface CalculatorFormProps {
 
 export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
   const [name, setName] = useState(product?.name ?? '')
-  const [cost, setCost] = useState(product ? String(product.cost) : '')
+  const [cost, setCost] = useState(product ? String(product.cost) : '0')
   const [expenses, setExpenses] = useState(product ? String(product.expenses) : '')
   const [price, setPrice] = useState(product ? String(product.price) : '')
   const [desiredMargin, setDesiredMargin] = useState(
