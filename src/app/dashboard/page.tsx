@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
 import { FinanzasButton } from '@/components/dashboard/FinanzasButton'
+import { SalesSummaryChart } from '@/components/dashboard/SalesSummaryChart'
 import { PLAN_LIMITS } from '@/lib/plan-config'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
@@ -32,6 +33,8 @@ export default async function DashboardPage() {
         </div>
         <FinanzasButton plan={plan} />
       </div>
+
+      <SalesSummaryChart products={productList} />
 
       <DashboardProductsSection
         products={productList}
