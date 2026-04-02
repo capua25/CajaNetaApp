@@ -38,13 +38,8 @@ export default async function LandingPage() {
                 Empezar gratis
               </Button>
             </Link>
-            <Link href="/product/new">
-              <Button size="lg" variant="outline" className="text-base px-8">
-                Probar ahora
-              </Button>
-            </Link>
           </div>
-          <p className="text-sm text-gray-500">Sin tarjeta de crédito · 1 producto gratis para siempre</p>
+          <p className="text-sm text-gray-500">Resultados en menos de 30 segundos · Probalo gratis</p>
         </div>
       </section>
 
