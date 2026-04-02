@@ -60,10 +60,17 @@ export default function TerminosPage() {
         <p>La Plataforma puede ofrecer versiones gratuitas y de pago.</p>
         <p className="font-medium text-gray-800">Plan gratuito</p>
         <LegalList items={['Acceso limitado a funcionalidades']} />
+        <p className="font-medium text-gray-800">Plan de pago (Plus)</p>
+        <LegalList
+          items={[
+            'Acceso a hasta 200 productos',
+            'Facturación recurrente mediante terceros (actualmente Mercado Pago)',
+          ]}
+        />
         <p className="font-medium text-gray-800">Plan de pago (Pro)</p>
         <LegalList
           items={[
-            'Acceso a funcionalidades avanzadas',
+            'Acceso a productos ilimitados y funcionalidades avanzadas',
             'Facturación recurrente mediante terceros (actualmente Mercado Pago)',
           ]}
         />
