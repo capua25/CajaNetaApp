@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
-import { NewProductButton } from '@/components/products/NewProductButton'
 import { PLAN_LIMITS } from '@/lib/plan-config'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
@@ -33,33 +32,23 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-gray-900">Mis productos</h1>
           <p className="text-gray-500 text-sm mt-1">{user.email}</p>
         </div>
-        <div className="flex items-center gap-3">
-          {userProfile?.plan === 'pro' && (
-            <Link href="/dashboard/finanzas">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                Finanzas Avanzadas
-                <Badge variant="default" className="text-xs">Pro</Badge>
-              </Button>
-            </Link>
-          )}
-          <NewProductButton isFreeLimitReached={isFreeLimitReached} plan={plan === 'pro' ? 'free' : plan} />
-        </div>
+        {userProfile?.plan === 'pro' && (
+          <Link href="/dashboard/finanzas">
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              Finanzas Avanzadas
+              <Badge variant="default" className="text-xs">Pro</Badge>
+            </Button>
+          </Link>
+        )}
       </div>
 
-      {productList.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
-          <p className="text-lg mb-4">Todavía no tenés productos</p>
-          <Link href="/product/new">
-            <Button>Calcular mi primer producto</Button>
-          </Link>
-        </div>
-      ) : (
-        <DashboardProductsSection
-          products={productList}
-          isFreePlan={userProfile?.plan === 'free'}
-          planStatus={userProfile?.plan_status}
-        />
-      )}
+      <DashboardProductsSection
+        products={productList}
+        isFreePlan={userProfile?.plan === 'free'}
+        planStatus={userProfile?.plan_status}
+        isFreeLimitReached={isFreeLimitReached}
+        plan={plan}
+      />
     </main>
   )
 }
