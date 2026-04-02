@@ -49,6 +49,60 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
   const [editSubmitting, setEditSubmitting] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
 
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newPrice, setNewPrice] = useState('')
+  const [newCost, setNewCost] = useState('')
+  const [newExpenses, setNewExpenses] = useState('')
+  const [newQty, setNewQty] = useState('')
+  const [addSubmitting, setAddSubmitting] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault()
+    setAddError(null)
+    setAddSubmitting(true)
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newName.trim(),
+          price: Number(newPrice),
+          cost: Number(newCost),
+          expenses: Number(newExpenses),
+          quantity_sold: parseInt(newQty) || 0,
+          desired_margin: 0.3,
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error ?? 'Error al guardar')
+      }
+      const created = await res.json()
+      const cost = Number(created.cost)
+      const expenses = Number(created.expenses)
+      const price = Number(created.price)
+      const cv = cost + expenses
+      const rawMc = price - cv
+      const mc = rawMc <= 0 ? null : rawMc
+      const rc = mc !== null && price > 0 ? mc / price : null
+      const quantity_sold = Number(created.quantity_sold)
+      const revenue = price * quantity_sold
+      setProducts(prev => [{
+        id: created.id, name: created.name, price, cost, expenses,
+        cv, mc, rc, quantity_sold, revenue, weight: 0,
+      }, ...prev])
+      setNewName(''); setNewPrice(''); setNewCost(''); setNewExpenses(''); setNewQty('')
+      setShowAddForm(false)
+      router.refresh()
+    } catch (err) {
+      setAddError(err instanceof Error ? err.message : 'Error desconocido')
+    } finally {
+      setAddSubmitting(false)
+    }
+  }
+
   async function handleDelete(id: string) {
     setDeletingId(id)
     setConfirmId(null)
@@ -138,14 +192,6 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
     }
   }
 
-  if (products.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground text-sm">
-        No hay productos para mostrar.
-      </div>
-    )
-  }
-
   const hasZeroQty = products.some((p) => p.quantity_sold === 0)
 
   return (
@@ -162,6 +208,49 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
         </div>
       )}
 
+      {showAddForm ? (
+        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-3 rounded-xl ring-1 ring-foreground/10 px-4 py-4">
+          <div className="space-y-1">
+            <Label htmlFor="new-name">Nombre</Label>
+            <Input id="new-name" value={newName} onChange={e => setNewName(e.target.value)} required />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-price">Precio</Label>
+            <Input id="new-price" type="number" min="0" step="0.01" value={newPrice} onChange={e => setNewPrice(e.target.value)} required />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-cost">Costo</Label>
+            <Input id="new-cost" type="number" min="0" step="0.01" value={newCost} onChange={e => setNewCost(e.target.value)} required />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-expenses">Gastos</Label>
+            <Input id="new-expenses" type="number" min="0" step="0.01" value={newExpenses} onChange={e => setNewExpenses(e.target.value)} required />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="new-qty">Unidades vendidas</Label>
+            <Input id="new-qty" type="number" min="0" step="1" value={newQty} onChange={e => setNewQty(e.target.value)} />
+          </div>
+          <div className="flex gap-2">
+            <Button type="submit" size="sm" disabled={addSubmitting}>
+              {addSubmitting ? 'Guardando...' : 'Agregar'}
+            </Button>
+            <Button type="button" variant="ghost" size="sm" onClick={() => { setShowAddForm(false); setAddError(null) }} disabled={addSubmitting}>
+              Cancelar
+            </Button>
+          </div>
+          {addError && <p className="w-full text-sm text-destructive">{addError}</p>}
+        </form>
+      ) : (
+        <Button size="sm" variant="outline" onClick={() => setShowAddForm(true)}>
+          + Agregar producto
+        </Button>
+      )}
+
+      {products.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground text-sm">
+          No hay productos para mostrar.
+        </div>
+      ) : (
       <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
@@ -329,6 +418,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
           </tbody>
         </table>
       </div>
+      )}
     </div>
   )
 }
