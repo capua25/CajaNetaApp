@@ -1,6 +1,11 @@
-import { Info } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { Info, BarChart2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip } from '@/components/ui/tooltip'
+import { MetricChartModal } from './MetricChartModal'
+import type { MetricKey } from './MetricChartModal'
 import type { FinancialSummary } from '@/lib/types'
 
 interface SummaryCardsProps {
@@ -30,19 +35,30 @@ function safetyMarginColor(ms: number): string {
 interface MetricCardProps {
   title: string
   tooltip?: string
+  onClick?: () => void
   children: React.ReactNode
 }
 
-function MetricCard({ title, tooltip, children }: MetricCardProps) {
+function MetricCard({ title, tooltip, onClick, children }: MetricCardProps) {
+  const isClickable = Boolean(onClick)
   return (
-    <Card className="overflow-visible">
+    <Card
+      className={`overflow-visible ${isClickable ? 'cursor-pointer hover:shadow-md transition-shadow group' : ''}`}
+      onClick={onClick}
+    >
       <CardHeader>
         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
           {title}
           {tooltip && (
             <Tooltip content={tooltip}>
-              <Info className="h-3.5 w-3.5 cursor-help text-muted-foreground/60 hover:text-muted-foreground" />
+              <Info
+                className="h-3.5 w-3.5 cursor-help text-muted-foreground/60 hover:text-muted-foreground"
+                onClick={(e) => e.stopPropagation()}
+              />
             </Tooltip>
+          )}
+          {isClickable && (
+            <BarChart2 className="h-3.5 w-3.5 ml-auto text-muted-foreground/30 group-hover:text-muted-foreground/70 transition-colors" />
           )}
         </CardTitle>
       </CardHeader>
@@ -58,6 +74,8 @@ function NoData() {
 }
 
 export function SummaryCards({ summary }: SummaryCardsProps) {
+  const [activeMetric, setActiveMetric] = useState<MetricKey | null>(null)
+
   const {
     total_fixed_costs_monthly,
     mc_mix,
@@ -69,78 +87,109 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
   } = summary
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {/* CF Mensual */}
-      <MetricCard title="Costos Fijos Mensuales" tooltip="Gastos que pagás todos los meses sin importar cuánto vendés: alquiler, sueldos, servicios. Base para calcular tu punto de equilibrio.">
-        {total_fixed_costs_monthly > 0 ? (
-          <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly)}</p>
-        ) : (
-          <p className="text-sm text-muted-foreground italic">
-            Ingresá tus costos fijos para ver el punto de equilibrio
-          </p>
-        )}
-      </MetricCard>
+    <>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* CF Mensual — no chart, just a single number */}
+        <MetricCard
+          title="Costos Fijos Mensuales"
+          tooltip="Gastos que pagás todos los meses sin importar cuánto vendés: alquiler, sueldos, servicios. Base para calcular tu punto de equilibrio."
+        >
+          {total_fixed_costs_monthly > 0 ? (
+            <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly)}</p>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">
+              Ingresá tus costos fijos para ver el punto de equilibrio
+            </p>
+          )}
+        </MetricCard>
 
-      {/* MC Mix */}
-      <MetricCard title="Margen de Contribución Mix" tooltip="Cuánto contribuye en promedio cada unidad vendida a cubrir tus costos fijos, ponderado por las cantidades de cada producto.">
-        {mc_mix !== null ? (
-          <p className="text-2xl font-bold">{formatCurrency(mc_mix)}</p>
-        ) : (
-          <div>
+        {/* MC Mix */}
+        <MetricCard
+          title="Margen de Contribución Mix"
+          tooltip="Cuánto contribuye en promedio cada unidad vendida a cubrir tus costos fijos, ponderado por las cantidades de cada producto."
+          onClick={mc_mix !== null ? () => setActiveMetric('mc_mix') : undefined}
+        >
+          {mc_mix !== null ? (
+            <p className="text-2xl font-bold">{formatCurrency(mc_mix)}</p>
+          ) : (
+            <div>
+              <NoData />
+              {!has_quantity_data && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Ingresá cantidades vendidas para ver el análisis
+                </p>
+              )}
+            </div>
+          )}
+        </MetricCard>
+
+        {/* Punto de Equilibrio (unidades) */}
+        <MetricCard
+          title="Punto de Equilibrio (unidades)"
+          tooltip="Cantidad de unidades que tenés que vender para no ganar ni perder. Por debajo de este número estás perdiendo plata."
+          onClick={break_even_units !== null ? () => setActiveMetric('break_even_units') : undefined}
+        >
+          {break_even_units !== null ? (
+            <p className="text-2xl font-bold">{formatNumber(break_even_units, 1)} u.</p>
+          ) : (
             <NoData />
-            {!has_quantity_data && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Ingresá cantidades vendidas para ver el análisis
-              </p>
-            )}
-          </div>
-        )}
-      </MetricCard>
+          )}
+        </MetricCard>
 
-      {/* Punto de Equilibrio (unidades) */}
-      <MetricCard title="Punto de Equilibrio (unidades)" tooltip="Cantidad de unidades que tenés que vender para no ganar ni perder. Por debajo de este número estás perdiendo plata.">
-        {break_even_units !== null ? (
-          <p className="text-2xl font-bold">{formatNumber(break_even_units, 1)} u.</p>
-        ) : (
-          <NoData />
-        )}
-      </MetricCard>
+        {/* Punto de Equilibrio (ingresos) */}
+        <MetricCard
+          title="Punto de Equilibrio (ingresos)"
+          tooltip="Cuánta plata en ventas necesitás para cubrir exactamente todos tus costos."
+          onClick={break_even_revenue !== null ? () => setActiveMetric('break_even_revenue') : undefined}
+        >
+          {break_even_revenue !== null ? (
+            <p className="text-2xl font-bold">{formatCurrency(break_even_revenue)}</p>
+          ) : (
+            <NoData />
+          )}
+        </MetricCard>
 
-      {/* Punto de Equilibrio (ingresos) */}
-      <MetricCard title="Punto de Equilibrio (ingresos)" tooltip="Cuánta plata en ventas necesitás para cubrir exactamente todos tus costos.">
-        {break_even_revenue !== null ? (
-          <p className="text-2xl font-bold">{formatCurrency(break_even_revenue)}</p>
-        ) : (
-          <NoData />
-        )}
-      </MetricCard>
+        {/* Ventas Actuales */}
+        <MetricCard
+          title="Ventas Actuales"
+          tooltip="Total de ingresos estimados por mes según las unidades vendidas que ingresaste. Compará con el punto de equilibrio para saber si estás en zona segura."
+          onClick={actual_revenue > 0 && break_even_revenue !== null ? () => setActiveMetric('actual_revenue') : undefined}
+        >
+          {actual_revenue > 0 ? (
+            <div>
+              <p className="text-2xl font-bold">{formatCurrency(actual_revenue)}</p>
+              {break_even_revenue !== null && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Equilibrio: {formatCurrency(break_even_revenue)}
+                </p>
+              )}
+            </div>
+          ) : (
+            <NoData />
+          )}
+        </MetricCard>
 
-      {/* Ventas actuales vs equilibrio */}
-      <MetricCard title="Ventas Actuales" tooltip="Total de ingresos estimados por mes según las unidades vendidas que ingresaste. Compará con el punto de equilibrio para saber si estás en zona segura.">
-        {actual_revenue > 0 ? (
-          <div>
-            <p className="text-2xl font-bold">{formatCurrency(actual_revenue)}</p>
-            {break_even_revenue !== null && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Equilibrio: {formatCurrency(break_even_revenue)}
-              </p>
-            )}
-          </div>
-        ) : (
-          <NoData />
-        )}
-      </MetricCard>
+        {/* Margen de Seguridad */}
+        <MetricCard
+          title="Margen de Seguridad"
+          tooltip="Cuánto pueden caer tus ventas antes de entrar en pérdida. Verde > 20%: estás bien. Amarillo 10–20%: cuidado. Rojo < 10%: zona de riesgo."
+          onClick={margin_of_safety !== null ? () => setActiveMetric('margin_of_safety') : undefined}
+        >
+          {margin_of_safety !== null ? (
+            <p className={`text-2xl font-bold ${safetyMarginColor(margin_of_safety)}`}>
+              {formatNumber(margin_of_safety * 100, 1)}%
+            </p>
+          ) : (
+            <NoData />
+          )}
+        </MetricCard>
+      </div>
 
-      {/* Margen de Seguridad */}
-      <MetricCard title="Margen de Seguridad" tooltip="Cuánto pueden caer tus ventas antes de entrar en pérdida. Verde > 20%: estás bien. Amarillo 10–20%: cuidado. Rojo < 10%: zona de riesgo.">
-        {margin_of_safety !== null ? (
-          <p className={`text-2xl font-bold ${safetyMarginColor(margin_of_safety)}`}>
-            {formatNumber(margin_of_safety * 100, 1)}%
-          </p>
-        ) : (
-          <NoData />
-        )}
-      </MetricCard>
-    </div>
+      <MetricChartModal
+        summary={summary}
+        metric={activeMetric}
+        onClose={() => setActiveMetric(null)}
+      />
+    </>
   )
 }
