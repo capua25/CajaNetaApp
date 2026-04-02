@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { getStatusMessage } from '@/lib/calculator'
 import type { Product, CalculationResult } from '@/lib/types'
 
 interface ResultDisplayProps {
@@ -14,13 +15,6 @@ interface ResultDisplayProps {
 const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
-function getStatusMessage(result: CalculationResult, desiredMargin: number): string {
-  if (result.margin < 0) return 'Estás vendiendo por debajo del costo.'
-  if (result.monthly_profit === 0) return 'Sin ventas registradas. El margen no refleja impacto real.'
-  if (result.status === 'success') return 'Estás cumpliendo tu objetivo de margen.'
-  if (result.status === 'warning') return 'Rentable, pero por debajo de tu objetivo de margen.'
-  return 'Margen muy alejado de tu objetivo.'
-}
 
 export function ResultDisplay({ product, result, onEdit, onClose }: ResultDisplayProps) {
   return (
@@ -31,7 +25,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge status={result.status} />
-            <span className="text-sm text-gray-500">{getStatusMessage(result, product.desired_margin)}</span>
+            <span className="text-sm text-gray-500">{getStatusMessage(result)}</span>
           </div>
         </div>
       </div>

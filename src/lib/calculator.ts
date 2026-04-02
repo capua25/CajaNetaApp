@@ -1,5 +1,13 @@
 import type { CalculationResult, Product, ProductStatus } from './types'
 
+export function getStatusMessage(result: CalculationResult): string {
+  if (result.margin < 0) return 'Estás vendiendo por debajo del costo.'
+  if (result.monthly_profit === 0) return 'Sin ventas registradas. El margen no refleja impacto real.'
+  if (result.status === 'success') return 'Estás cumpliendo tu objetivo de margen.'
+  if (result.status === 'warning') return 'Rentable, pero por debajo de tu objetivo de margen.'
+  return 'Margen muy alejado de tu objetivo.'
+}
+
 export function calcCostTotal(cost: number, expenses: number): number {
   return cost + expenses
 }

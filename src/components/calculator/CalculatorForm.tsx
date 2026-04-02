@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { calculate } from '@/lib/calculator'
+import { calculate, getStatusMessage } from '@/lib/calculator'
 import type { Product } from '@/lib/types'
 
 const formatUYU = (value: number) =>
@@ -194,8 +194,8 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
           <CardContent>
             {preview ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Estado</span>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs text-gray-500">{getStatusMessage(preview)}</span>
                   <StatusBadge status={preview.status} />
                 </div>
                 <div className="flex items-center justify-between">
