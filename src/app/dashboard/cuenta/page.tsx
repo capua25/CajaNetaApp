@@ -83,6 +83,13 @@ export default async function CuentaPage({
           </div>
         </CardContent>
       </Card>
+      <footer className="pt-4 border-t border-gray-200">
+        <nav className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+          <a href="/legal/terminos" className="hover:text-gray-600 transition-colors">Términos y condiciones</a>
+          <a href="/legal/privacidad" className="hover:text-gray-600 transition-colors">Política de privacidad</a>
+          <a href="/legal/aviso-legal" className="hover:text-gray-600 transition-colors">Aviso legal</a>
+        </nav>
+      </footer>
     </main>
   )
 }
