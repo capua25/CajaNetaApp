@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { SubscribeButton } from '@/components/billing/SubscribeButton'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
 import type { Plan } from '@/lib/types'
 
@@ -82,6 +83,15 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
           <p className="text-xs text-gray-500 text-center pt-1">
             Suscripción cancelada. Tu acceso continúa hasta el próximo período de facturación.
           </p>
+        )}
+
+        {plan === 'plus' && planStatus === 'active' && (
+          <div className="pt-3 border-t space-y-2">
+            <p className="text-sm text-gray-500">
+              Pasá a Pro para acceder a finanzas avanzadas: punto de equilibrio, mix de productos y más.
+            </p>
+            <SubscribeButton plan="pro" label="Actualizar a Pro" />
+          </div>
         )}
       </CardContent>
     </Card>

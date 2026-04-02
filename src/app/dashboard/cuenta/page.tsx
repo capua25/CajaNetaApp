@@ -1,12 +1,11 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { BillingCard } from '@/components/billing/BillingCard'
 import { PendingPlanPoller } from '@/components/billing/PendingPlanPoller'
 import { PreapprovalActivator } from '@/components/billing/PreapprovalActivator'
+import { SubscribeButton } from '@/components/billing/SubscribeButton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
 import type { UserProfile } from '@/lib/types'
 
@@ -67,9 +66,8 @@ export default async function CuentaPage({
             <p className="text-sm text-gray-500">
               Estás en el plan gratuito. Actualizá tu plan para desbloquear más productos y funciones avanzadas.
             </p>
-            <Link href="/pricing">
-              <Button size="sm" className="w-full">Ver planes</Button>
-            </Link>
+            <SubscribeButton plan="plus" label="Actualizar a Plus" />
+            <SubscribeButton plan="pro" label="Actualizar a Pro" />
           </CardContent>
         </Card>
       )}
