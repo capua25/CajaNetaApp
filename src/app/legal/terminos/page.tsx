@@ -89,7 +89,7 @@ export default function TerminosPage() {
         <LegalList
           items={[
             'No se realizan reembolsos por períodos ya facturados',
-            'El acceso al plan Pro se mantiene hasta el final del ciclo de facturación',
+            'El acceso al plan Plus o Pro se mantiene hasta el final del ciclo de facturación',
           ]}
         />
       </LegalSection>
