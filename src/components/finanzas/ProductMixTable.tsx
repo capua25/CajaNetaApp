@@ -39,6 +39,14 @@ function formatNumber(value: number | null, decimals = 0): string {
   return new Intl.NumberFormat('es-UY', { maximumFractionDigits: decimals }).format(value)
 }
 
+function recalcWeights(products: ProductWithMix[]): ProductWithMix[] {
+  const totalQty = products.reduce((sum, p) => sum + p.quantity_sold, 0)
+  return products.map((p) => ({
+    ...p,
+    weight: totalQty > 0 ? p.quantity_sold / totalQty : 0,
+  }))
+}
+
 export function ProductMixTable({ initialProducts, has_quantity_data }: ProductMixTableProps) {
   const router = useRouter()
   const [products, setProducts] = useState(initialProducts)
@@ -89,10 +97,10 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
       const rc = mc !== null && price > 0 ? mc / price : null
       const quantity_sold = Number(created.quantity_sold)
       const revenue = price * quantity_sold
-      setProducts(prev => [{
+      setProducts(prev => recalcWeights([{
         id: created.id, name: created.name, price, cost, expenses,
         cv, mc, rc, quantity_sold, revenue, weight: 0,
-      }, ...prev])
+      }, ...prev]))
       setNewName(''); setNewPrice(''); setNewCost(''); setNewExpenses(''); setNewQty('')
       setShowAddForm(false)
       router.refresh()
@@ -108,7 +116,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
     setConfirmId(null)
     try {
       await fetch(`/api/products/${id}`, { method: 'DELETE' })
-      setProducts(prev => prev.filter(p => p.id !== id))
+      setProducts(prev => recalcWeights(prev.filter(p => p.id !== id)))
       router.refresh()
     } finally {
       setDeletingId(null)
@@ -164,24 +172,11 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
       const rc = mc !== null && price > 0 ? mc / price : null
       const quantity_sold = Number(updated.quantity_sold)
       const revenue = price * quantity_sold
-      const totalQty = products.reduce((sum, p) => p.id === updated.id ? sum + quantity_sold : sum + p.quantity_sold, 0)
       setProducts(prev =>
-        prev.map(p => {
+        recalcWeights(prev.map(p => {
           if (p.id !== updated.id) return p
-          return {
-            id: updated.id,
-            name: updated.name,
-            price,
-            cost,
-            expenses,
-            cv,
-            mc,
-            rc,
-            quantity_sold,
-            revenue,
-            weight: totalQty > 0 ? quantity_sold / totalQty : 0,
-          }
-        })
+          return { id: updated.id, name: updated.name, price, cost, expenses, cv, mc, rc, quantity_sold, revenue, weight: 0 }
+        }))
       )
       setEditState(null)
       router.refresh()
