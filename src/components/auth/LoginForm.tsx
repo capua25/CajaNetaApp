@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,13 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 
+// FINDING-006: use configured site URL instead of window.location.origin
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+
 type View = 'login' | 'forgot'
+
+// FINDING-004: cooldown duration in seconds to prevent email spam
+const FORGOT_COOLDOWN_SECONDS = 60
 
 export function LoginForm() {
   const [view, setView] = useState<View>('login')
@@ -18,7 +24,15 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [forgotSent, setForgotSent] = useState(false)
+  const [cooldown, setCooldown] = useState(0)
   const router = useRouter()
+
+  // FINDING-004: decrement cooldown every second
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [cooldown])
 
   async function handleGoogleSignIn() {
     setError(null)
@@ -26,7 +40,8 @@ export function LoginForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        // FINDING-006: prefer configured URL, fallback to current origin only as last resort
+        redirectTo: `${SITE_URL ?? window.location.origin}/auth/callback`,
       },
     })
     if (error) setError('No se pudo iniciar sesión con Google.')
@@ -56,18 +71,16 @@ export function LoginForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
+    // Fire and forget — do NOT expose whether the email exists (FINDING-005)
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${SITE_URL ?? window.location.origin}/auth/callback?type=recovery`,
     })
 
     setLoading(false)
-
-    if (error) {
-      setError('No se pudo enviar el email. Intentá de nuevo.')
-      return
-    }
-
+    // FINDING-005: always show success regardless of result to prevent account enumeration
     setForgotSent(true)
+    // FINDING-004: start cooldown to prevent email spam
+    setCooldown(FORGOT_COOLDOWN_SECONDS)
   }
 
   return (
@@ -144,12 +157,25 @@ export function LoginForm() {
         ) : forgotSent ? (
           <div className="space-y-4 text-center">
             <p className="text-sm text-muted-foreground">
-              Te enviamos un email a <span className="font-medium text-foreground">{email}</span>.
-              Revisá tu bandeja de entrada y seguí el link para crear una nueva contraseña.
+              Si existe una cuenta con <span className="font-medium text-foreground">{email}</span>,
+              vas a recibir un email con el link para restablecer tu contraseña.
             </p>
-            <Button variant="outline" className="w-full" onClick={() => { setView('login'); setForgotSent(false) }}>
+            {cooldown > 0 ? (
+              <Button variant="outline" className="w-full" disabled>
+                Reenviar en {cooldown}s
+              </Button>
+            ) : (
+              <Button variant="outline" className="w-full" onClick={() => setForgotSent(false)}>
+                Reenviar email
+              </Button>
+            )}
+            <button
+              type="button"
+              onClick={() => { setView('login'); setForgotSent(false); setError(null) }}
+              className="w-full text-sm text-muted-foreground hover:text-foreground underline"
+            >
               Volver al inicio de sesión
-            </Button>
+            </button>
           </div>
         ) : (
           <form onSubmit={handleForgot} className="space-y-4">
@@ -167,8 +193,7 @@ export function LoginForm() {
                 required
               />
             </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || cooldown > 0}>
               {loading ? 'Enviando...' : 'Enviar link de recuperación'}
             </Button>
             <button
