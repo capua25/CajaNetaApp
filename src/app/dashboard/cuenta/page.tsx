@@ -4,6 +4,7 @@ import { BillingCard } from '@/components/billing/BillingCard'
 import { PendingPlanPoller } from '@/components/billing/PendingPlanPoller'
 import { PreapprovalActivator } from '@/components/billing/PreapprovalActivator'
 import { SubscribeButton } from '@/components/billing/SubscribeButton'
+import { ChangePasswordForm } from '@/components/auth/ChangePasswordForm'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
@@ -71,6 +72,17 @@ export default async function CuentaPage({
           </CardContent>
         </Card>
       )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Seguridad</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Contraseña</span>
+            <ChangePasswordForm />
+          </div>
+        </CardContent>
+      </Card>
     </main>
   )
 }
