@@ -1,6 +1,6 @@
 export type Plan = 'free' | 'plus' | 'pro'
 
-export type ProductStatus = 'success' | 'warning' | 'danger'
+export type ProductStatus = 'success' | 'warning' | 'critical' | 'danger'
 
 export type Recurrence = 'monthly' | 'annual'
 

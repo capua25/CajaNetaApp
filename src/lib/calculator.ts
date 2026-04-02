@@ -5,6 +5,7 @@ export function getStatusMessage(result: CalculationResult): string {
   if (result.monthly_profit === 0) return 'Sin ventas registradas. El margen no refleja impacto real.'
   if (result.status === 'success') return 'Estás cumpliendo tu objetivo de margen.'
   if (result.status === 'warning') return 'Rentable, pero por debajo de tu objetivo de margen.'
+  if (result.status === 'critical') return 'Ganás, pero el margen está muy alejado de tu objetivo.'
   return 'Margen muy alejado de tu objetivo.'
 }
 
@@ -35,7 +36,7 @@ export function calcStatus(
   if (quantitySold === 0) return 'warning'
   if (margin >= desiredMargin) return 'success'
   if (margin >= desiredMargin * 0.7) return 'warning'
-  return 'danger'
+  return 'critical'
 }
 
 export function calculate(
