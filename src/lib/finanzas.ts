@@ -67,6 +67,8 @@ export function buildProductMix(
       id: p.id,
       name: p.name,
       price: p.price,
+      cost: p.cost,
+      expenses: p.expenses,
       cv,
       mc,
       rc,

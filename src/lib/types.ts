@@ -29,6 +29,8 @@ export interface ProductWithMix {
   id: string
   name: string
   price: number
+  cost: number
+  expenses: number
   cv: number          // cost + expenses
   mc: number | null   // price - cv (null if mc <= 0)
   rc: number | null   // mc / price (null if price === 0)
