@@ -12,6 +12,7 @@ export interface PlanConfig {
   priceDisplay: string
   priceSuffix: string | null
   features: string[]
+  summaryFeatures: string[]
   borderClass: string
   activeBorderClass: string
   activeLabelClass: string
@@ -23,6 +24,12 @@ export const PLAN_CONFIGS: PlanConfig[] = [
     label: 'Gratis',
     priceDisplay: '$0',
     priceSuffix: null,
+    summaryFeatures: [
+      '1 producto',
+      'Ganancia real por producto',
+      'Margen de ganancia en %',
+      'Precio sugerido',
+    ],
     features: [
       '1 producto',
       'Ganancia real por producto',
@@ -38,6 +45,12 @@ export const PLAN_CONFIGS: PlanConfig[] = [
     label: 'Plus',
     priceDisplay: 'UYU 199',
     priceSuffix: '/mes',
+    summaryFeatures: [
+      'Hasta 200 productos',
+      'Ganancia real por producto',
+      'Margen de ganancia en %',
+      'Precio sugerido',
+    ],
     features: [
       'Hasta 200 productos',
       'Ganancia real por producto',
@@ -53,6 +66,11 @@ export const PLAN_CONFIGS: PlanConfig[] = [
     label: 'Pro',
     priceDisplay: 'UYU 450',
     priceSuffix: '/mes',
+    summaryFeatures: [
+      'Productos ilimitados',
+      'Todo lo de Plus',
+      'Finanzas avanzadas: punto de equilibrio, mix de productos y más',
+    ],
     features: [
       'Productos ilimitados',
       'Ganancia real por producto',

@@ -99,7 +99,7 @@ export default async function LandingPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <ul className="space-y-2 text-gray-600">
-                    {plan.features.map((feature) => (
+                    {plan.summaryFeatures.map((feature) => (
                       <li key={feature} className="flex items-center gap-2">
                         <CheckIcon />
                         {feature}
