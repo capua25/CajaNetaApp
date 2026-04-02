@@ -7,6 +7,8 @@ import type { Product, CalculationResult } from '@/lib/types'
 interface ResultDisplayProps {
   product: Product
   result: CalculationResult
+  onEdit?: () => void
+  onClose?: () => void
 }
 
 const formatUYU = (value: number) =>
@@ -20,7 +22,7 @@ function getStatusMessage(result: CalculationResult, desiredMargin: number): str
   return 'Margen muy alejado de tu objetivo.'
 }
 
-export function ResultDisplay({ product, result }: ResultDisplayProps) {
+export function ResultDisplay({ product, result, onEdit, onClose }: ResultDisplayProps) {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
@@ -104,12 +106,20 @@ export function ResultDisplay({ product, result }: ResultDisplayProps) {
 
       {/* Actions */}
       <div className="flex gap-3">
-        <Link href="/dashboard" className="flex-1">
-          <Button variant="outline" className="w-full">← Volver al dashboard</Button>
-        </Link>
-        <Link href={`/product/${product.id}/edit`} className="flex-1">
-          <Button className="w-full">Editar producto</Button>
-        </Link>
+        {onClose ? (
+          <Button variant="outline" className="flex-1" onClick={onClose}>← Volver al dashboard</Button>
+        ) : (
+          <Link href="/dashboard" className="flex-1">
+            <Button variant="outline" className="w-full">← Volver al dashboard</Button>
+          </Link>
+        )}
+        {onEdit ? (
+          <Button className="flex-1" onClick={onEdit}>Editar producto</Button>
+        ) : (
+          <Link href={`/product/${product.id}/edit`} className="flex-1">
+            <Button className="w-full">Editar producto</Button>
+          </Link>
+        )}
       </div>
     </div>
   )

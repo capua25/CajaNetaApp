@@ -15,9 +15,10 @@ const formatUYU = (value: number) =>
 
 interface CalculatorFormProps {
   product?: Product
+  onSuccess?: () => void
 }
 
-export function CalculatorForm({ product }: CalculatorFormProps) {
+export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
   const [name, setName] = useState(product?.name ?? '')
   const [cost, setCost] = useState(product ? String(product.cost) : '')
   const [expenses, setExpenses] = useState(product ? String(product.expenses) : '')
@@ -85,7 +86,11 @@ export function CalculatorForm({ product }: CalculatorFormProps) {
     }
 
     const saved = await res.json()
-    router.push(`/product/${saved.id}`)
+    if (onSuccess) {
+      onSuccess()
+    } else {
+      router.push(`/product/${saved.id}`)
+    }
   }
 
   return (

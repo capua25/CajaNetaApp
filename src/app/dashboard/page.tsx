@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ProductList } from '@/components/products/ProductList'
+import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
 import { NewProductButton } from '@/components/products/NewProductButton'
 import { PLAN_LIMITS } from '@/lib/plan-config'
 import type { UserProfile, Product, Plan } from '@/lib/types'
@@ -54,7 +54,11 @@ export default async function DashboardPage() {
           </Link>
         </div>
       ) : (
-        <ProductList products={productList} isFreePlan={userProfile?.plan === 'free'} planStatus={userProfile?.plan_status} />
+        <DashboardProductsSection
+          products={productList}
+          isFreePlan={userProfile?.plan === 'free'}
+          planStatus={userProfile?.plan_status}
+        />
       )}
     </main>
   )

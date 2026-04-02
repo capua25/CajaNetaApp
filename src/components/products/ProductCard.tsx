@@ -11,12 +11,14 @@ interface ProductCardProps {
   isFreePlan: boolean
   planStatus?: string
   totalProducts?: number
+  onDetail?: (product: Product) => void
+  onEdit?: (product: Product) => void
 }
 
 const formatUYU = (value: number) =>
   new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
-export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1 }: ProductCardProps) {
+export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
   const freeOverLimit = isFreePlan && totalProducts > 1
   const canEdit = !freeOverLimit
   const canDelete = !isFreePlan || freeOverLimit
@@ -33,9 +35,15 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
           <div className="flex items-center gap-2">
             <StatusBadge status={result.status} />
             {canEdit ? (
-              <Link href={`/product/${product.id}/edit`} className="text-gray-400 hover:text-gray-600">
-                <Pencil className="h-4 w-4" />
-              </Link>
+              onEdit ? (
+                <button onClick={() => onEdit(product)} className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="h-4 w-4" />
+                </button>
+              ) : (
+                <Link href={`/product/${product.id}/edit`} className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="h-4 w-4" />
+                </Link>
+              )
             ) : (
               <span
                 title="Eliminá productos hasta llegar al límite del plan gratuito para poder editar"
@@ -59,12 +67,21 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
             <p className="font-semibold text-gray-900">{(result.margin * 100).toFixed(1)}%</p>
           </div>
         </div>
-        <Link
-          href={`/product/${product.id}`}
-          className="mt-3 block text-sm text-blue-600 hover:underline"
-        >
-          Ver detalles →
-        </Link>
+        {onDetail ? (
+          <button
+            onClick={() => onDetail(product)}
+            className="mt-3 block text-sm text-blue-600 hover:underline"
+          >
+            Ver detalles →
+          </button>
+        ) : (
+          <Link
+            href={`/product/${product.id}`}
+            className="mt-3 block text-sm text-blue-600 hover:underline"
+          >
+            Ver detalles →
+          </Link>
+        )}
       </CardContent>
     </Card>
   )
