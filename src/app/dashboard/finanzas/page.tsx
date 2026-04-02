@@ -59,7 +59,7 @@ export default async function FinanzasPage() {
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Mix de productos</h2>
-        <ProductMixTable products={summary.products} has_quantity_data={summary.has_quantity_data} />
+        <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} />
       </section>
     </main>
   )

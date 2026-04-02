@@ -1,7 +1,12 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { ProductWithMix } from '@/lib/types'
 
 interface ProductMixTableProps {
-  products: ProductWithMix[]
+  initialProducts: ProductWithMix[]
   has_quantity_data: boolean
 }
 
@@ -23,7 +28,24 @@ function formatNumber(value: number | null, decimals = 0): string {
   return new Intl.NumberFormat('es-UY', { maximumFractionDigits: decimals }).format(value)
 }
 
-export function ProductMixTable({ products, has_quantity_data }: ProductMixTableProps) {
+export function ProductMixTable({ initialProducts, has_quantity_data }: ProductMixTableProps) {
+  const router = useRouter()
+  const [products, setProducts] = useState(initialProducts)
+  const [confirmId, setConfirmId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  async function handleDelete(id: string) {
+    setDeletingId(id)
+    setConfirmId(null)
+    try {
+      await fetch(`/api/products/${id}`, { method: 'DELETE' })
+      setProducts(prev => prev.filter(p => p.id !== id))
+      router.refresh()
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   if (products.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground text-sm">
@@ -60,6 +82,7 @@ export function ProductMixTable({ products, has_quantity_data }: ProductMixTable
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">Unidades</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">Ingresos</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">% del mix</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -84,6 +107,38 @@ export function ProductMixTable({ products, has_quantity_data }: ProductMixTable
                 </td>
                 <td className="px-4 py-3 text-right">
                   {p.quantity_sold > 0 ? formatPct(p.weight) : '—'}
+                </td>
+                <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <div className="flex items-center justify-end gap-3">
+                    <Link href={`/product/${p.id}/edit`} className="text-sm text-blue-600 hover:underline">
+                      Editar
+                    </Link>
+                    {confirmId === p.id ? (
+                      <>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          disabled={deletingId === p.id}
+                          className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                        >
+                          {deletingId === p.id ? 'Eliminando...' : '¿Eliminar?'}
+                        </button>
+                        <button
+                          onClick={() => setConfirmId(null)}
+                          className="text-sm text-muted-foreground hover:underline"
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmId(p.id)}
+                        disabled={deletingId === p.id}
+                        className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Eliminar
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
