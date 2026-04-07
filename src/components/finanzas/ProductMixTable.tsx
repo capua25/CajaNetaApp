@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
 import type { ProductWithMix } from '@/lib/types'
 
 interface ProductMixTableProps {
@@ -58,6 +59,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
   const [editError, setEditError] = useState<string | null>(null)
 
   const [showAddForm, setShowAddForm] = useState(false)
+  const [bulkSalesOpen, setBulkSalesOpen] = useState(false)
   const [newName, setNewName] = useState('')
   const [newPrice, setNewPrice] = useState('')
   const [newCost, setNewCost] = useState('')
@@ -236,10 +238,24 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
           {addError && <p className="w-full text-sm text-destructive">{addError}</p>}
         </form>
       ) : (
-        <Button size="sm" variant="outline" onClick={() => setShowAddForm(true)}>
-          + Agregar producto
-        </Button>
+        <div className="flex gap-2">
+          {products.length > 0 && (
+            <Button size="sm" variant="outline" onClick={() => setBulkSalesOpen(true)}>
+              Actualizar ventas mensuales
+            </Button>
+          )}
+          <Button size="sm" variant="outline" onClick={() => setShowAddForm(true)}>
+            + Agregar producto
+          </Button>
+        </div>
       )}
+
+      <BulkSalesModal
+        open={bulkSalesOpen}
+        onClose={() => setBulkSalesOpen(false)}
+        products={products}
+        onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
+      />
 
       {products.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground text-sm">

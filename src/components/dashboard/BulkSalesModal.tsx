@@ -5,12 +5,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { Product } from '@/lib/types'
+interface ProductEntry {
+  id: string
+  name: string
+  quantity_sold: number
+}
 
 interface BulkSalesModalProps {
   open: boolean
   onClose: () => void
-  products: Product[]
+  products: ProductEntry[]
   onSuccess: () => void
 }
 
