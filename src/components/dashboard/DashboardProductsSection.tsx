@@ -8,6 +8,7 @@ import { ProductList } from '@/components/products/ProductList'
 import { NewProductButton } from '@/components/products/NewProductButton'
 import { ResultDisplay } from '@/components/calculator/ResultDisplay'
 import { CalculatorForm } from '@/components/calculator/CalculatorForm'
+import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
 import { calculate } from '@/lib/calculator'
 import type { Product, Plan } from '@/lib/types'
 
@@ -23,6 +24,7 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
   const router = useRouter()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'new' | null>(null)
+  const [bulkSalesOpen, setBulkSalesOpen] = useState(false)
 
   function openDetail(product: Product) {
     setSelectedProduct(product)
@@ -54,7 +56,12 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
 
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-2 mb-4">
+        {!isFreePlan && products.length > 0 && (
+          <Button variant="outline" onClick={() => setBulkSalesOpen(true)}>
+            Actualizar ventas mensuales
+          </Button>
+        )}
         <NewProductButton
           isFreeLimitReached={isFreeLimitReached}
           plan={planForButton}
@@ -76,6 +83,13 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
           onEdit={openEdit}
         />
       )}
+
+      <BulkSalesModal
+        open={bulkSalesOpen}
+        onClose={() => setBulkSalesOpen(false)}
+        products={products}
+        onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
+      />
 
       <Dialog open={modalMode !== null} onOpenChange={(open) => { if (!open) closeModal() }}>
         <DialogContent className="sm:max-w-xl md:max-w-2xl max-h-[90vh] overflow-y-auto">
