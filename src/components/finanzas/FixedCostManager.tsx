@@ -39,6 +39,7 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
   const [error, setError] = useState<string | null>(null)
 
   // Add form state
+  const [showAddForm, setShowAddForm] = useState(false)
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [recurrence, setRecurrence] = useState<Recurrence>('monthly')
@@ -74,6 +75,7 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
       setName('')
       setAmount('')
       setRecurrence('monthly')
+      setShowAddForm(false)
       setCosts(prev => [newCost, ...prev])
       router.refresh()
     } catch (err) {
@@ -158,58 +160,63 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Costos Fijos</CardTitle>
+        <Button size="sm" variant="outline" onClick={() => { setShowAddForm(v => !v); setError(null) }}>
+          {showAddForm ? 'Cancelar' : 'Agregar'}
+        </Button>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Add form */}
-        <form onSubmit={handleAdd} className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="space-y-1">
-              <Label htmlFor="cf-name">Nombre</Label>
-              <Input
-                id="cf-name"
-                placeholder="Ej: Alquiler"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+        {showAddForm && (
+          <form onSubmit={handleAdd} className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="space-y-1">
+                <Label htmlFor="cf-name">Nombre</Label>
+                <Input
+                  id="cf-name"
+                  placeholder="Ej: Alquiler"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cf-amount">Monto</Label>
+                <Input
+                  id="cf-amount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cf-recurrence">Recurrencia</Label>
+                <select
+                  id="cf-recurrence"
+                  value={recurrence}
+                  onChange={(e) => setRecurrence(e.target.value as Recurrence)}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="monthly">Mensual</option>
+                  <option value="annual">Anual</option>
+                </select>
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="cf-amount">Monto</Label>
-              <Input
-                id="cf-amount"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="cf-recurrence">Recurrencia</Label>
-              <select
-                id="cf-recurrence"
-                value={recurrence}
-                onChange={(e) => setRecurrence(e.target.value as Recurrence)}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              >
-                <option value="monthly">Mensual</option>
-                <option value="annual">Anual</option>
-              </select>
-            </div>
-          </div>
 
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
+            )}
 
-          <Button type="submit" size="sm" disabled={submitting}>
-            {submitting ? 'Guardando...' : 'Agregar costo fijo'}
-          </Button>
-        </form>
+            <Button type="submit" size="sm" disabled={submitting}>
+              {submitting ? 'Guardando...' : 'Guardar'}
+            </Button>
+          </form>
+        )}
 
         {/* Costs list */}
         {costs.length === 0 ? (
