@@ -11,7 +11,11 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data: profile } = await supabase.from('users').select('plan').eq('id', user.id).single()
+  const [{ data: profile }, { count: productCount }] = await Promise.all([
+    supabase.from('users').select('plan').eq('id', user.id).single(),
+    supabase.from('products').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
+
   if (profile?.plan === 'free') {
     return NextResponse.json({ error: 'FREE_PLAN_NOT_ALLOWED' }, { status: 403 })
   }
@@ -19,8 +23,9 @@ export async function PATCH(request: Request) {
   const body = await request.json()
   const { updates } = body
 
-  if (!Array.isArray(updates) || updates.length === 0 || updates.length > 200) {
-    return NextResponse.json({ error: 'updates must be an array of 1–200 items' }, { status: 400 })
+  const actualCount = productCount ?? 0
+  if (!Array.isArray(updates) || updates.length === 0 || updates.length > actualCount) {
+    return NextResponse.json({ error: 'updates must be a non-empty array no larger than your product count' }, { status: 400 })
   }
 
   for (const item of updates) {
