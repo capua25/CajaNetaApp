@@ -54,7 +54,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
       {/* Per-product breakdown */}
       <div className="rounded-xl border border-gray-100 bg-white px-5 py-5 shadow-sm">
         <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-400">Por producto</p>
-        <div className="max-h-64 overflow-y-auto pr-1 space-y-4">
+        <div className="max-h-96 overflow-y-auto pr-1 space-y-4">
           {sorted.map((p) => {
             const revenue = p.price * p.quantity_sold
             const revenuePct = maxRevenue > 0 ? (revenue / maxRevenue) * 100 : 0

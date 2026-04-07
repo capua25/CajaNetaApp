@@ -47,6 +47,7 @@ export function BulkSalesModal({ open, onClose, products, onSuccess }: BulkSales
       return
     }
 
+    setLoading(false)
     onSuccess()
   }
 
