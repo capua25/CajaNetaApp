@@ -1,3 +1,5 @@
+import { Info } from 'lucide-react'
+import { Tooltip } from '@/components/ui/tooltip'
 import type { Product } from '@/lib/types'
 
 function formatCurrency(v: number) {
@@ -51,7 +53,12 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
           </p>
         </div>
         <div className="col-span-2 lg:col-span-1 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Ganancia neta</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-400 flex items-center gap-1">
+            Ganancia neta
+            <Tooltip content="Suma de la ganancia por unidad de cada producto multiplicada por sus unidades vendidas. No incluye costos fijos.">
+              <Info className="h-3 w-3 cursor-help text-gray-300 hover:text-gray-400" />
+            </Tooltip>
+          </p>
           <p className={`mt-1 text-2xl font-bold tabular-nums ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatCurrency(totalProfit)}
           </p>
