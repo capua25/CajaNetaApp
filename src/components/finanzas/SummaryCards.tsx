@@ -204,7 +204,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
 
       {has_quantity_data && (
         <p className="text-xs text-muted-foreground">
-          Los puntos de equilibrio se calculan en base al mix actual de ventas y al margen de ganancia de cada producto. Si cambiás las unidades vendidas, los valores se actualizan.
+          Los puntos de equilibrio asumen que seguís vendiendo cada artículo en la misma proporción que el mix actual. Si vendés más de un producto que de otro, estos valores cambian. Si actualizás las cantidades, los valores se recalculan automáticamente.
         </p>
       )}
 
