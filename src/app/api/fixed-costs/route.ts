@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  if (typeof name !== 'string' || name.trim() === '') {
+  if (typeof name !== 'string' || name.trim() === '' || name.length > 200) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
   }
 
@@ -105,7 +105,7 @@ export async function PATCH(request: Request) {
 
   const updates: Record<string, unknown> = {}
   if (name !== undefined) {
-    if (typeof name !== 'string' || name.trim() === '') {
+    if (typeof name !== 'string' || name.trim() === '' || name.length > 200) {
       return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
     }
     updates.name = name.trim()

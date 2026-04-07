@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { getPreapproval } from '@/lib/mercadopago'
 import type { Plan } from '@/lib/types'
 
@@ -49,7 +50,8 @@ export async function POST(request: NextRequest) {
   const plan = PLAN_MAP()[preapproval.preapproval_plan_id]
   if (!plan) return NextResponse.json({ error: 'UNKNOWN_PLAN' }, { status: 422 })
 
-  const { error: updateError } = await supabase
+  const serviceSupabase = createServiceClient()
+  const { error: updateError } = await serviceSupabase
     .from('users')
     .update({ plan, plan_status: 'active', mp_subscription_id: preapprovalId })
     .eq('id', user.id)

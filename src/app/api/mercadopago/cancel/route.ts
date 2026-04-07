@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { cancelPreapproval, getPreapproval } from '@/lib/mercadopago'
 import type { UserProfile } from '@/lib/types'
 
@@ -42,7 +43,8 @@ export async function POST() {
     return NextResponse.json({ error: 'MP_API_ERROR', detail: message }, { status: 502 })
   }
 
-  const { error: updateError } = await supabase
+  const serviceSupabase = createServiceClient()
+  const { error: updateError } = await serviceSupabase
     .from('users')
     .update({ plan_status: 'cancelled', plan_expires_at: expiresAt })
     .eq('id', user.id)
