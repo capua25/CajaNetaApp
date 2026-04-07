@@ -94,6 +94,11 @@ export function validateWebhookSignature(headers: Headers, rawBody: string): boo
     }
     if (!ts || !v1) return false
 
+    // Reject if timestamp is outside ±5 minute window (replay attack protection)
+    const tsNum = parseInt(ts, 10)
+    const nowSec = Math.floor(Date.now() / 1000)
+    if (isNaN(tsNum) || Math.abs(nowSec - tsNum) > 300) return false
+
     // Parse data.id from raw body
     const payload = JSON.parse(rawBody)
     const dataId: string = payload?.data?.id ?? ''

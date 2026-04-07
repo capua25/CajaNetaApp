@@ -65,11 +65,9 @@ export function RegisterForm() {
     }
 
     if (!data.session) {
-      if (data.user?.identities?.length === 0) {
-        setError('Este email ya está registrado. Intentá iniciar sesión.')
-      } else {
-        setConfirmEmail(true)
-      }
+      // Always show the same confirmation screen regardless of whether the
+      // email already exists — avoids leaking account existence to attackers.
+      setConfirmEmail(true)
       setLoading(false)
       return
     }

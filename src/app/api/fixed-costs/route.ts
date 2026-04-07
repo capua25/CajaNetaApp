@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import type { Recurrence } from '@/lib/types'
 
 const VALID_RECURRENCES: Recurrence[] = ['monthly', 'annual']
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function GET() {
   const supabase = await createClient()
@@ -98,6 +99,9 @@ export async function PATCH(request: Request) {
   if (!id) {
     return NextResponse.json({ error: 'Missing id' }, { status: 400 })
   }
+  if (!UUID_REGEX.test(id)) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+  }
 
   const updates: Record<string, unknown> = {}
   if (name !== undefined) {
@@ -157,6 +161,9 @@ export async function DELETE(request: Request) {
 
   if (!id) {
     return NextResponse.json({ error: 'Missing id query parameter' }, { status: 400 })
+  }
+  if (!UUID_REGEX.test(id)) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
   }
 
   // Ownership enforced via RLS + explicit user_id filter

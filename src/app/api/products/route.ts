@@ -73,6 +73,10 @@ export async function POST(request: Request) {
   if (quantity_sold !== undefined && (!Number.isInteger(quantity_sold) || quantity_sold < 0)) {
     return NextResponse.json({ error: 'quantity_sold must be a non-negative integer' }, { status: 400 })
   }
+  const parsedMargin = Number(desired_margin ?? 0.3)
+  if (!Number.isFinite(parsedMargin) || parsedMargin < 0 || parsedMargin >= 1) {
+    return NextResponse.json({ error: 'desired_margin must be a number between 0 and 0.99' }, { status: 400 })
+  }
 
   const { data: product, error } = await supabase
     .from('products')
@@ -82,7 +86,7 @@ export async function POST(request: Request) {
       cost: Number(cost),
       expenses: Number(expenses ?? 0),
       price: Number(price),
-      desired_margin: Number(desired_margin ?? 0.3),
+      desired_margin: parsedMargin,
       quantity_sold: Number(quantity_sold ?? 0),
     })
     .select()

@@ -19,8 +19,8 @@ export async function PATCH(request: Request) {
   const body = await request.json()
   const { updates } = body
 
-  if (!Array.isArray(updates) || updates.length === 0) {
-    return NextResponse.json({ error: 'updates must be a non-empty array' }, { status: 400 })
+  if (!Array.isArray(updates) || updates.length === 0 || updates.length > 200) {
+    return NextResponse.json({ error: 'updates must be an array of 1–200 items' }, { status: 400 })
   }
 
   for (const item of updates) {
