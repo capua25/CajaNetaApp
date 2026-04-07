@@ -126,7 +126,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         {/* Punto de Equilibrio (unidades) */}
         <MetricCard
           title="Punto de Equilibrio (unidades)"
-          tooltip="Cantidad de unidades que tenés que vender para no ganar ni perder. Por debajo de este número estás perdiendo plata."
+          tooltip="Unidades totales que tenés que vender para cubrir tus costos fijos. Varía con el mix de ventas: si los productos que más vendés tienen menor margen de ganancia, necesitás vender más unidades para llegar al equilibrio."
           onClick={break_even_units !== null ? () => setActiveMetric('break_even_units') : undefined}
         >
           {break_even_units !== null ? (
@@ -139,7 +139,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         {/* Punto de Equilibrio (ingresos) */}
         <MetricCard
           title="Punto de Equilibrio (ingresos)"
-          tooltip="Cuánta plata en ventas necesitás para cubrir exactamente todos tus costos."
+          tooltip="Facturación mensual necesaria para cubrir todos tus costos. Varía con el mix de ventas: cada producto pesa diferente según su precio y margen de ganancia, por lo que vender más de uno que de otro mueve este número."
           onClick={break_even_revenue !== null ? () => setActiveMetric('break_even_revenue') : undefined}
         >
           {break_even_revenue !== null ? (
@@ -184,6 +184,12 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           )}
         </MetricCard>
       </div>
+
+      {has_quantity_data && (
+        <p className="text-xs text-muted-foreground">
+          Los puntos de equilibrio se calculan en base al mix actual de ventas y al margen de ganancia de cada producto. Si cambiás las unidades vendidas, los valores se actualizan.
+        </p>
+      )}
 
       <MetricChartModal
         summary={summary}
