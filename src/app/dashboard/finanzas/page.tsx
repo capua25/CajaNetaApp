@@ -64,10 +64,7 @@ export default async function FinanzasPage() {
 
       <FixedCostManager initialCosts={fixedCosts ?? []} />
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">Mix de productos</h2>
-        <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} />
-      </section>
+      <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} />
     </main>
   )
 }

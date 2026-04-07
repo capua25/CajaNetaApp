@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
 import type { ProductWithMix } from '@/lib/types'
 
@@ -192,77 +193,80 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
   const hasZeroQty = products.some((p) => p.quantity_sold === 0)
 
   return (
-    <div className="space-y-3">
-      {!has_quantity_data && (
-        <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
-          Ingresá cantidades vendidas para ver el análisis de mix de productos.
-        </div>
-      )}
-
-      {has_quantity_data && hasZeroQty && (
-        <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
-          Algunos productos tienen cantidad vendida = 0 y no se incluyen en el cálculo del mix.
-        </div>
-      )}
-
-      {showAddForm ? (
-        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-3 rounded-xl ring-1 ring-foreground/10 px-4 py-4">
-          <div className="space-y-1">
-            <Label htmlFor="new-name">Nombre</Label>
-            <Input id="new-name" value={newName} onChange={e => setNewName(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="new-price">Precio</Label>
-            <Input id="new-price" type="number" min="0" step="0.01" value={newPrice} onChange={e => setNewPrice(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="new-cost">Costo</Label>
-            <Input id="new-cost" type="number" min="0" step="0.01" value={newCost} onChange={e => setNewCost(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="new-expenses">Gastos</Label>
-            <Input id="new-expenses" type="number" min="0" step="0.01" value={newExpenses} onChange={e => setNewExpenses(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="new-qty">Unidades vendidas</Label>
-            <Input id="new-qty" type="number" min="0" step="1" value={newQty} onChange={e => setNewQty(e.target.value)} />
-          </div>
-          <div className="flex gap-2">
-            <Button type="submit" size="sm" disabled={addSubmitting}>
-              {addSubmitting ? 'Guardando...' : 'Agregar'}
-            </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={() => { setShowAddForm(false); setAddError(null) }} disabled={addSubmitting}>
-              Cancelar
-            </Button>
-          </div>
-          {addError && <p className="w-full text-sm text-destructive">{addError}</p>}
-        </form>
-      ) : (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Mix de productos</CardTitle>
         <div className="flex gap-2">
-          {products.length > 0 && (
+          {products.length > 0 && !showAddForm && (
             <Button size="sm" variant="outline" onClick={() => setBulkSalesOpen(true)}>
               Actualizar ventas mensuales
             </Button>
           )}
-          <Button size="sm" variant="outline" onClick={() => setShowAddForm(true)}>
-            + Agregar producto
+          <Button size="sm" variant="outline" onClick={() => { setShowAddForm(v => !v); setAddError(null) }}>
+            {showAddForm ? 'Cancelar' : '+ Agregar producto'}
           </Button>
         </div>
-      )}
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!has_quantity_data && (
+          <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+            Ingresá cantidades vendidas para ver el análisis de mix de productos.
+          </div>
+        )}
 
-      <BulkSalesModal
-        open={bulkSalesOpen}
-        onClose={() => setBulkSalesOpen(false)}
-        products={products}
-        onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
-      />
+        {has_quantity_data && hasZeroQty && (
+          <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+            Algunos productos tienen cantidad vendida = 0 y no se incluyen en el cálculo del mix.
+          </div>
+        )}
 
-      {products.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground text-sm">
-          No hay productos para mostrar.
-        </div>
-      ) : (
-      <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+        {showAddForm && (
+          <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-3 rounded-xl ring-1 ring-foreground/10 px-4 py-4">
+            <div className="space-y-1">
+              <Label htmlFor="new-name">Nombre</Label>
+              <Input id="new-name" value={newName} onChange={e => setNewName(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-price">Precio</Label>
+              <Input id="new-price" type="number" min="0" step="0.01" value={newPrice} onChange={e => setNewPrice(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-cost">Costo</Label>
+              <Input id="new-cost" type="number" min="0" step="0.01" value={newCost} onChange={e => setNewCost(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-expenses">Gastos</Label>
+              <Input id="new-expenses" type="number" min="0" step="0.01" value={newExpenses} onChange={e => setNewExpenses(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new-qty">Unidades vendidas</Label>
+              <Input id="new-qty" type="number" min="0" step="1" value={newQty} onChange={e => setNewQty(e.target.value)} />
+            </div>
+            <div className="flex gap-2">
+              <Button type="submit" size="sm" disabled={addSubmitting}>
+                {addSubmitting ? 'Guardando...' : 'Guardar'}
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => { setShowAddForm(false); setAddError(null) }} disabled={addSubmitting}>
+                Cancelar
+              </Button>
+            </div>
+            {addError && <p className="w-full text-sm text-destructive">{addError}</p>}
+          </form>
+        )}
+
+        <BulkSalesModal
+          open={bulkSalesOpen}
+          onClose={() => setBulkSalesOpen(false)}
+          products={products}
+          onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
+        />
+
+        {products.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            No hay productos para mostrar.
+          </div>
+        ) : (
+        <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
             <tr>
@@ -432,8 +436,9 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
             )}
           </tbody>
         </table>
-      </div>
-      )}
-    </div>
+        </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
