@@ -257,6 +257,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">RC%</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">Unidades</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">Ingresos</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Ganancia mensual</th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground">% del mix</th>
               <th className="px-4 py-3" />
             </tr>
@@ -265,7 +266,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
             {products.map((p) =>
               editState?.id === p.id ? (
                 <tr key={p.id}>
-                  <td colSpan={9} className="px-4 py-3">
+                  <td colSpan={10} className="px-4 py-3">
                     <form onSubmit={handleEditSave} className="flex flex-wrap items-end gap-3">
                       <div className="space-y-1">
                         <Label htmlFor={`edit-name-${p.id}`}>Nombre</Label>
@@ -362,6 +363,9 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
                   </td>
                   <td className="px-4 py-3 text-right">
                     {p.quantity_sold > 0 ? formatCurrency(p.revenue) : '—'}
+                  </td>
+                  <td className={`px-4 py-3 text-right font-medium ${p.quantity_sold > 0 ? ((p.mc ?? 0) >= 0 ? 'text-green-600' : 'text-red-600') : ''}`}>
+                    {p.quantity_sold > 0 ? formatCurrency((p.mc ?? 0) * p.quantity_sold) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {p.quantity_sold > 0 ? formatPct(p.weight) : '—'}

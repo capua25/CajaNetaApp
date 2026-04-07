@@ -84,7 +84,10 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
     margin_of_safety,
     actual_revenue,
     has_quantity_data,
+    products,
   } = summary
+
+  const total_net_profit = products.reduce((sum, p) => sum + (p.mc ?? 0) * p.quantity_sold, 0)
 
   return (
     <>
@@ -164,6 +167,20 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
                 </p>
               )}
             </div>
+          ) : (
+            <NoData />
+          )}
+        </MetricCard>
+
+        {/* Ganancia Neta */}
+        <MetricCard
+          title="Ganancia Neta"
+          tooltip="Suma de la ganancia de cada producto multiplicada por sus unidades vendidas. No incluye costos fijos."
+        >
+          {has_quantity_data ? (
+            <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {formatCurrency(total_net_profit)}
+            </p>
           ) : (
             <NoData />
           )}
