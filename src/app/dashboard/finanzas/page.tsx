@@ -1,6 +1,8 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { buildFinancialSummary } from '@/lib/finanzas'
+import { Button } from '@/components/ui/button'
 import { SummaryCards } from '@/components/finanzas/SummaryCards'
 import { ProductMixTable } from '@/components/finanzas/ProductMixTable'
 import { FixedCostManager } from '@/components/finanzas/FixedCostManager'
@@ -48,9 +50,14 @@ export default async function FinanzasPage() {
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Finanzas Avanzadas</h1>
-        <p className="text-gray-500 text-sm mt-1">{user.email}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Finanzas Avanzadas</h1>
+          <p className="text-gray-500 text-sm mt-1">{user.email}</p>
+        </div>
+        <Link href="/dashboard">
+          <Button variant="outline" size="sm">Mis productos</Button>
+        </Link>
       </div>
 
       <SummaryCards summary={summary} />
