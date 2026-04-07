@@ -17,6 +17,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
 
   const totalUnits = withSales.reduce((acc, p) => acc + p.quantity_sold, 0)
   const totalRevenue = withSales.reduce((acc, p) => acc + p.price * p.quantity_sold, 0)
+  const totalProfit = withSales.reduce((acc, p) => acc + (p.price - p.cost - p.expenses) * p.quantity_sold, 0)
 
   if (withSales.length === 0) {
     return (
@@ -35,7 +36,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
   return (
     <div className="mb-8 space-y-4">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Unidades vendidas</p>
           <p className="mt-1 text-2xl font-bold text-gray-900 tabular-nums">
@@ -47,6 +48,12 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Monto total</p>
           <p className="mt-1 text-2xl font-bold text-gray-900 tabular-nums">
             {formatCurrency(totalRevenue)}
+          </p>
+        </div>
+        <div className="col-span-2 lg:col-span-1 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Ganancia neta</p>
+          <p className={`mt-1 text-2xl font-bold tabular-nums ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {formatCurrency(totalProfit)}
           </p>
         </div>
       </div>
