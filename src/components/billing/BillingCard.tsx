@@ -12,6 +12,7 @@ interface BillingCardProps {
   plan: Plan
   planStatus: string
   mpSubscriptionId: string | null
+  nextPaymentDate?: string | null
 }
 
 const STATUS_BADGE: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -20,7 +21,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: 'default' | 'second
   paused: { label: 'Pausado', variant: 'outline' },
 }
 
-export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId }: BillingCardProps) {
+export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId, nextPaymentDate }: BillingCardProps) {
   const [planStatus, setPlanStatus] = useState(initialStatus)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)
@@ -46,6 +47,10 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
   const planConfig = PLAN_CONFIGS.find((p) => p.key === plan)
   const statusConfig = STATUS_BADGE[planStatus] ?? { label: planStatus, variant: 'outline' as const }
 
+  const formattedNextPayment = nextPaymentDate
+    ? new Date(nextPaymentDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -60,6 +65,13 @@ export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId 
           <span className="text-gray-500">Estado</span>
           <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
         </div>
+
+        {formattedNextPayment && planStatus === 'active' && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Próxima facturación</span>
+            <span className="font-medium">{formattedNextPayment}</span>
+          </div>
+        )}
 
         {planStatus === 'active' && (
           <div className="pt-2 space-y-2">
