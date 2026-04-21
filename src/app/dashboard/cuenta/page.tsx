@@ -26,11 +26,21 @@ export default async function CuentaPage({
   const user = session?.user
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('id, email, plan, plan_status, mp_subscription_id, plan_expires_at, display_currency')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, rateInfo, { data: userOverride }] = await Promise.all([
+    supabase
+      .from('users')
+      .select('id, email, plan, plan_status, mp_subscription_id, plan_expires_at, display_currency')
+      .eq('id', user.id)
+      .single(),
+    getUsdToUyuRate(user.id),
+    supabase
+      .from('exchange_rates')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('from_currency', 'USD')
+      .eq('to_currency', 'UYU')
+      .maybeSingle(),
+  ])
 
   const userProfile = profile as UserProfile | null
   if (!userProfile) redirect('/auth/login')
