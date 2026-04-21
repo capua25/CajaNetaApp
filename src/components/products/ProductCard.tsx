@@ -58,7 +58,7 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">Ganancia</p>
-            <p className="font-semibold text-gray-900">{formatUYU(result.profit)}</p>
+            <p className="font-semibold text-gray-900">{formatCurrency(result.profit, product.currency)}</p>
           </div>
           <div>
             <p className="text-gray-500">Margen</p>
