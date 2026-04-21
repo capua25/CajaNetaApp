@@ -271,6 +271,14 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
                             />
                           </div>
                           <div className="space-y-1">
+                            <CurrencySelector
+                              id={`edit-currency-${cost.id}`}
+                              label="Moneda"
+                              value={editState.currency}
+                              onChange={(c) => setEditState({ ...editState, currency: c })}
+                            />
+                          </div>
+                          <div className="space-y-1">
                             <Label htmlFor={`edit-recurrence-${cost.id}`}>Recurrencia</Label>
                             <select
                               id={`edit-recurrence-${cost.id}`}
