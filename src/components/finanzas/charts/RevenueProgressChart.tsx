@@ -73,7 +73,7 @@ export function RevenueProgressChart({
         <div className="rounded-lg bg-muted/50 p-3 space-y-1">
           <p className="text-xs text-muted-foreground">Punto de equilibrio</p>
           <p className="text-xl font-bold tabular-nums">
-            {formatCurrency(break_even_revenue)}
+            {formatCurrency(break_even_revenue, currency)}
           </p>
         </div>
       </div>
