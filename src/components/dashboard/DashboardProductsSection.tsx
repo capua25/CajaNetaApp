@@ -81,6 +81,8 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
           products={products}
           isFreePlan={isFreePlan}
           planStatus={planStatus}
+          displayCurrency={displayCurrency}
+          exchangeRate={exchangeRate}
           onDetail={openDetail}
           onEdit={openEdit}
         />
