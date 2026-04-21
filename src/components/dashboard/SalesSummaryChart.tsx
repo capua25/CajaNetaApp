@@ -1,15 +1,18 @@
 import { Info } from 'lucide-react'
 import { Tooltip } from '@/components/ui/tooltip'
 import type { Product, Currency } from '@/lib/types'
-import { formatCurrency } from '@/lib/currency'
+import { formatCurrency, convertProduct } from '@/lib/currency'
 
 interface SalesSummaryChartProps {
   products: Product[]
   currency: Currency
+  exchangeRate: number
 }
 
-export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps) {
-  const withSales = products.filter((p) => p.quantity_sold > 0)
+export function SalesSummaryChart({ products, currency, exchangeRate }: SalesSummaryChartProps) {
+  const withSales = products
+    .filter((p) => p.quantity_sold > 0)
+    .map((p) => convertProduct(p, currency, exchangeRate))
 
   const totalUnits = withSales.reduce((acc, p) => acc + p.quantity_sold, 0)
   const totalRevenue = withSales.reduce((acc, p) => acc + p.price * p.quantity_sold, 0)
