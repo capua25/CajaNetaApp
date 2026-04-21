@@ -7,17 +7,12 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { MetricChartModal } from './MetricChartModal'
 import type { MetricKey } from './MetricChartModal'
 import type { FinancialSummary } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
+import type { Currency } from '@/lib/types'
 
 interface SummaryCardsProps {
   summary: FinancialSummary
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
+  currency: Currency
 }
 
 function formatNumber(value: number, decimals = 0): string {
