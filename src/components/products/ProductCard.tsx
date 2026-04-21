@@ -1,26 +1,32 @@
 import Link from 'next/link'
 import { Pencil } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { DeleteProductButton } from './DeleteProductButton'
 import { calculate } from '@/lib/calculator'
-import type { Product } from '@/lib/types'
-import { formatCurrency } from '@/lib/currency'
+import type { Product, Currency } from '@/lib/types'
+import { formatCurrency, convertProduct } from '@/lib/currency'
 
 interface ProductCardProps {
   product: Product
   isFreePlan: boolean
   planStatus?: string
   totalProducts?: number
+  displayCurrency?: Currency
+  exchangeRate?: number
   onDetail?: (product: Product) => void
   onEdit?: (product: Product) => void
 }
 
-export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
+export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, displayCurrency, exchangeRate, onDetail, onEdit }: ProductCardProps) {
   const freeOverLimit = isFreePlan && totalProducts > 1
   const canEdit = !freeOverLimit
   const canDelete = !isFreePlan || freeOverLimit
-  const result = calculate(product)
+  const displayed = displayCurrency && exchangeRate
+    ? convertProduct(product, displayCurrency, exchangeRate)
+    : product
+  const result = calculate(displayed)
 
   return (
     <Card className="hover:shadow-md transition-shadow">
