@@ -26,12 +26,16 @@ export default async function CuentaPage({
 
   const { data: profile } = await supabase
     .from('users')
-    .select('id, email, plan, plan_status, mp_subscription_id, plan_expires_at')
+    .select('id, email, plan, plan_status, mp_subscription_id, plan_expires_at, display_currency')
     .eq('id', user.id)
     .single()
 
   const userProfile = profile as UserProfile | null
   if (!userProfile) redirect('/auth/login')
+
+  const displayCurrency: Currency = isCurrency(userProfile.display_currency)
+    ? userProfile.display_currency
+    : 'UYU'
 
   const { preapproval_id } = await searchParams
 
