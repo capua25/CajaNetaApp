@@ -82,11 +82,19 @@ export default async function FinanzasPage() {
         </Link>
       </div>
 
-      <SummaryCards summary={summary} />
+      <ExchangeRateCard
+        initialRate={rateInfo.rate}
+        initialSource={rateInfo.source}
+        initialEffectiveDate={rateInfo.effectiveDate}
+        initialStale={rateInfo.stale}
+        hasOverride={Boolean(userOverride)}
+      />
 
-      <FixedCostManager initialCosts={fixedCosts ?? []} />
+      <SummaryCards summary={summary} currency={displayCurrency} />
 
-      <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} />
+      <FixedCostManager initialCosts={fixedCosts ?? []} currency={displayCurrency} />
+
+      <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} currency={displayCurrency} />
     </main>
   )
 }
