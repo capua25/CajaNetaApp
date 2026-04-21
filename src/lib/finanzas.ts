@@ -1,4 +1,5 @@
-import type { FixedCost, ProductWithMix, FinancialSummary, Recurrence } from './types'
+import type { FixedCost, ProductWithMix, FinancialSummary, Recurrence, Currency } from './types'
+import { convertProduct, convertFixedCost } from './currency'
 
 // ---------------------------------------------------------------------------
 // Normalisation
