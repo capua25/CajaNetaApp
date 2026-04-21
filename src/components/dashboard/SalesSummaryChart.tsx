@@ -54,7 +54,7 @@ export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps
             </Tooltip>
           </p>
           <p className={`mt-1 text-2xl font-bold tabular-nums ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {formatCurrency(totalProfit)}
+            {formatCurrency(totalProfit, currency)}
           </p>
         </div>
       </div>
