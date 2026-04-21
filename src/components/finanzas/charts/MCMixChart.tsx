@@ -69,7 +69,7 @@ export function MCMixChart({ products, mc_mix, currency }: MCMixChartProps) {
 
       <div className="pt-3 border-t flex items-center justify-between text-sm font-semibold">
         <span>MC Mix ponderado</span>
-        <span>{formatCurrency(mc_mix)}</span>
+        <span>{formatCurrency(mc_mix, currency)}</span>
       </div>
     </div>
   )
