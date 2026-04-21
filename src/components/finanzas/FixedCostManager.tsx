@@ -6,19 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { FixedCost, Recurrence } from '@/lib/types'
+import type { FixedCost, Recurrence, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 const RECURRENCE_LABELS: Record<Recurrence, string> = {
   monthly: 'Mensual',
   annual: 'Anual',
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 interface EditState {
