@@ -27,6 +27,9 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
     product ? String(Math.round(product.desired_margin * 100)) : '30'
   )
   const [quantitySold, setQuantitySold] = useState(product ? String(product.quantity_sold ?? 0) : '0')
+  const [currency, setCurrency] = useState<Currency>(
+    product?.currency && isCurrency(product.currency) ? product.currency : 'UYU'
+  )
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
