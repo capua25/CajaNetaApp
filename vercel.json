@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/downgrade-expired",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/refresh-exchange-rate",
+      "schedule": "0 10 * * *"
     }
   ],
   "headers": [
