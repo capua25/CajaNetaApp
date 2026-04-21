@@ -81,7 +81,7 @@ export function BreakEvenChart({
         <span>
           {type === 'units'
             ? `${beValue.toFixed(1)} unidades`
-            : formatCurrency(beValue)}
+            : formatCurrency(beValue, currency)}
         </span>
       </div>
     </div>
