@@ -84,7 +84,7 @@ export function DisplayCurrencySection({ initialCurrency }: DisplayCurrencySecti
       </Card>
 
       <Dialog open={pendingCurrency !== null} onOpenChange={(open) => { if (!open) handleCancel() }}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>¿Cambiar moneda de visualización?</DialogTitle>
             <DialogDescription>
