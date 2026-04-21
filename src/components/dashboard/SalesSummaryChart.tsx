@@ -43,7 +43,7 @@ export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps
         <div className="rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Monto total</p>
           <p className="mt-1 text-2xl font-bold text-gray-900 tabular-nums">
-            {formatCurrency(totalRevenue)}
+            {formatCurrency(totalRevenue, currency)}
           </p>
         </div>
         <div className="col-span-2 lg:col-span-1 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
