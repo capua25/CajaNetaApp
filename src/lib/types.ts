@@ -15,6 +15,7 @@ export interface Product {
   price: number
   desired_margin: number
   quantity_sold: number
+  currency: Currency
   created_at: string
 }
 
