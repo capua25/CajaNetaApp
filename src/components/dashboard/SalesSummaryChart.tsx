@@ -1,20 +1,14 @@
 import { Info } from 'lucide-react'
 import { Tooltip } from '@/components/ui/tooltip'
-import type { Product } from '@/lib/types'
-
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import type { Product, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface SalesSummaryChartProps {
   products: Product[]
+  currency: Currency
 }
 
-export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
+export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps) {
   const withSales = products.filter((p) => p.quantity_sold > 0)
 
   const totalUnits = withSales.reduce((acc, p) => acc + p.quantity_sold, 0)
@@ -49,7 +43,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
         <div className="rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Monto total</p>
           <p className="mt-1 text-2xl font-bold text-gray-900 tabular-nums">
-            {formatCurrency(totalRevenue)}
+            {formatCurrency(totalRevenue, currency)}
           </p>
         </div>
         <div className="col-span-2 lg:col-span-1 rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
@@ -60,7 +54,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
             </Tooltip>
           </p>
           <p className={`mt-1 text-2xl font-bold tabular-nums ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {formatCurrency(totalProfit)}
+            {formatCurrency(totalProfit, currency)}
           </p>
         </div>
       </div>
@@ -81,7 +75,7 @@ export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
                   <span className="text-right tabular-nums text-xs text-gray-500">
                     {p.quantity_sold.toLocaleString('es-UY')} u.
                     <span className="mx-1.5 text-gray-300">·</span>
-                    {formatCurrency(revenue)}
+                    {formatCurrency(revenue, currency)}
                   </span>
                 </div>
                 {/* Units bar */}

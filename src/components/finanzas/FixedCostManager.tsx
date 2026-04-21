@@ -6,19 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { FixedCost, Recurrence } from '@/lib/types'
+import type { FixedCost, Recurrence, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 const RECURRENCE_LABELS: Record<Recurrence, string> = {
   monthly: 'Mensual',
   annual: 'Anual',
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 interface EditState {
@@ -30,9 +23,10 @@ interface EditState {
 
 interface FixedCostManagerProps {
   initialCosts: FixedCost[]
+  currency: Currency
 }
 
-export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
+export function FixedCostManager({ initialCosts, currency }: FixedCostManagerProps) {
   const router = useRouter()
   const [costs, setCosts] = useState<FixedCost[]>(initialCosts)
   const [submitting, setSubmitting] = useState(false)
@@ -299,11 +293,12 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
                   ) : (
                     <tr key={cost.id}>
                       <td className="px-4 py-2 font-medium">{cost.name}</td>
-                      <td className="px-4 py-2 text-right">{formatCurrency(cost.amount)}</td>
+                      <td className="px-4 py-2 text-right">{formatCurrency(cost.amount, cost.currency)}</td>
                       <td className="px-4 py-2 text-center">{RECURRENCE_LABELS[cost.recurrence]}</td>
                       <td className="px-4 py-2 text-right">
                         {formatCurrency(
-                          cost.recurrence === 'annual' ? cost.amount / 12 : cost.amount
+                          cost.recurrence === 'annual' ? cost.amount / 12 : cost.amount,
+                          cost.currency
                         )}
                       </td>
                       <td className="px-4 py-2 text-right">

@@ -7,17 +7,12 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { MetricChartModal } from './MetricChartModal'
 import type { MetricKey } from './MetricChartModal'
 import type { FinancialSummary } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
+import type { Currency } from '@/lib/types'
 
 interface SummaryCardsProps {
   summary: FinancialSummary
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
+  currency: Currency
 }
 
 function formatNumber(value: number, decimals = 0): string {
@@ -73,7 +68,7 @@ function NoData() {
   )
 }
 
-export function SummaryCards({ summary }: SummaryCardsProps) {
+export function SummaryCards({ summary, currency }: SummaryCardsProps) {
   const [activeMetric, setActiveMetric] = useState<MetricKey | null>(null)
 
   const {
@@ -98,7 +93,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           tooltip="Gastos que pagás todos los meses sin importar cuánto vendés: alquiler, sueldos, servicios. Base para calcular tu punto de equilibrio."
         >
           {total_fixed_costs_monthly > 0 ? (
-            <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly, currency)}</p>
           ) : (
             <p className="text-sm text-muted-foreground italic">
               Ingresá tus costos fijos para ver el punto de equilibrio
@@ -113,7 +108,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           onClick={mc_mix !== null ? () => setActiveMetric('mc_mix') : undefined}
         >
           {mc_mix !== null ? (
-            <p className="text-2xl font-bold">{formatCurrency(mc_mix)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(mc_mix, currency)}</p>
           ) : (
             <div>
               <NoData />
@@ -146,7 +141,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           onClick={break_even_revenue !== null ? () => setActiveMetric('break_even_revenue') : undefined}
         >
           {break_even_revenue !== null ? (
-            <p className="text-2xl font-bold">{formatCurrency(break_even_revenue)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(break_even_revenue, currency)}</p>
           ) : (
             <NoData />
           )}
@@ -160,10 +155,10 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         >
           {actual_revenue > 0 ? (
             <div>
-              <p className="text-2xl font-bold">{formatCurrency(actual_revenue)}</p>
+              <p className="text-2xl font-bold">{formatCurrency(actual_revenue, currency)}</p>
               {break_even_revenue !== null && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Equilibrio: {formatCurrency(break_even_revenue)}
+                  Equilibrio: {formatCurrency(break_even_revenue, currency)}
                 </p>
               )}
             </div>
@@ -179,7 +174,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         >
           {has_quantity_data ? (
             <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatCurrency(total_net_profit)}
+              {formatCurrency(total_net_profit, currency)}
             </p>
           ) : (
             <NoData />
@@ -212,6 +207,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
         summary={summary}
         metric={activeMetric}
         onClose={() => setActiveMetric(null)}
+        currency={currency}
       />
     </>
   )

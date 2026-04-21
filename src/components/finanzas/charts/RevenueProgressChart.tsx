@@ -1,21 +1,18 @@
 'use client'
 
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import { formatCurrency } from '@/lib/currency'
+import type { Currency } from '@/lib/types'
 
 interface RevenueProgressChartProps {
   actual_revenue: number
   break_even_revenue: number | null
+  currency: Currency
 }
 
 export function RevenueProgressChart({
   actual_revenue,
   break_even_revenue,
+  currency,
 }: RevenueProgressChartProps) {
   if (break_even_revenue === null || actual_revenue === 0) {
     return (
@@ -56,7 +53,7 @@ export function RevenueProgressChart({
             className="absolute -translate-x-1/2"
             style={{ left: `${bePct}%` }}
           >
-            Equilibrio: {formatCurrency(break_even_revenue)}
+            Equilibrio: {formatCurrency(break_even_revenue, currency)}
           </span>
         </div>
       </div>
@@ -70,13 +67,13 @@ export function RevenueProgressChart({
               isAbove ? 'text-green-600' : 'text-red-600'
             }`}
           >
-            {formatCurrency(actual_revenue)}
+            {formatCurrency(actual_revenue, currency)}
           </p>
         </div>
         <div className="rounded-lg bg-muted/50 p-3 space-y-1">
           <p className="text-xs text-muted-foreground">Punto de equilibrio</p>
           <p className="text-xl font-bold tabular-nums">
-            {formatCurrency(break_even_revenue)}
+            {formatCurrency(break_even_revenue, currency)}
           </p>
         </div>
       </div>
@@ -88,8 +85,8 @@ export function RevenueProgressChart({
         }`}
       >
         {isAbove
-          ? `Superás el equilibrio por ${formatCurrency(actual_revenue - break_even_revenue)}`
-          : `Te faltan ${formatCurrency(break_even_revenue - actual_revenue)} para alcanzar el equilibrio`}
+          ? `Superás el equilibrio por ${formatCurrency(actual_revenue - break_even_revenue, currency)}`
+          : `Te faltan ${formatCurrency(break_even_revenue - actual_revenue, currency)} para alcanzar el equilibrio`}
       </p>
     </div>
   )

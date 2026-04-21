@@ -1,20 +1,14 @@
 'use client'
 
-import type { ProductWithMix } from '@/lib/types'
-
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import type { ProductWithMix, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface BreakEvenChartProps {
   products: ProductWithMix[]
   break_even_units: number | null
   break_even_revenue: number | null
   type: 'units' | 'revenue'
+  currency: Currency
 }
 
 export function BreakEvenChart({
@@ -22,6 +16,7 @@ export function BreakEvenChart({
   break_even_units,
   break_even_revenue,
   type,
+  currency,
 }: BreakEvenChartProps) {
   const beValue = type === 'units' ? break_even_units : break_even_revenue
 
@@ -64,7 +59,7 @@ export function BreakEvenChart({
                 <span className="font-medium">
                   {type === 'units'
                     ? `${item.value.toFixed(1)} u.`
-                    : formatCurrency(item.value)}
+                    : formatCurrency(item.value, currency)}
                 </span>
                 <span className="text-muted-foreground text-xs ml-1.5">
                   ({((item.value / beValue) * 100).toFixed(0)}%)
@@ -86,7 +81,7 @@ export function BreakEvenChart({
         <span>
           {type === 'units'
             ? `${beValue.toFixed(1)} unidades`
-            : formatCurrency(beValue)}
+            : formatCurrency(beValue, currency)}
         </span>
       </div>
     </div>

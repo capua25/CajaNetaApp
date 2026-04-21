@@ -8,10 +8,10 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { calculate, getStatusMessage } from '@/lib/calculator'
+import { formatCurrency, isCurrency } from '@/lib/currency'
+import { CurrencySelector } from '@/components/CurrencySelector'
 import type { Product } from '@/lib/types'
-
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
+import type { Currency } from '@/lib/types'
 
 interface CalculatorFormProps {
   product?: Product
@@ -27,6 +27,9 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
     product ? String(Math.round(product.desired_margin * 100)) : '30'
   )
   const [quantitySold, setQuantitySold] = useState(product ? String(product.quantity_sold ?? 0) : '0')
+  const [currency, setCurrency] = useState<Currency>(
+    product?.currency && isCurrency(product.currency) ? product.currency : 'UYU'
+  )
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -70,6 +73,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
         price: numPrice,
         desired_margin: numMargin,
         quantity_sold: Number(quantitySold) || 0,
+        currency,
       }),
     })
 
@@ -113,7 +117,15 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cost">Costo (UYU)</Label>
+              <CurrencySelector
+                id="currency"
+                label="Moneda"
+                value={currency}
+                onChange={setCurrency}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cost">Costo</Label>
               <Input
                 id="cost"
                 type="number"
@@ -126,7 +138,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="expenses">Gastos adicionales (UYU)</Label>
+              <Label htmlFor="expenses">Gastos adicionales</Label>
               <Input
                 id="expenses"
                 type="number"
@@ -139,7 +151,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               <p className="text-xs text-gray-500">Luz, gas, embalaje, delivery...</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Precio de venta (UYU)</Label>
+              <Label htmlFor="price">Precio de venta</Label>
               <Input
                 id="price"
                 type="number"
@@ -200,12 +212,12 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Costo total</span>
-                  <span className="font-semibold">{formatUYU(preview.cost_total)}</span>
+                  <span className="font-semibold">{formatCurrency(preview.cost_total, currency)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Ganancia</span>
                   <span className={`font-semibold ${preview.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatUYU(preview.profit)}
+                    {formatCurrency(preview.profit, currency)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -214,7 +226,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
                 </div>
                 <div className="flex items-center justify-between border-t pt-4">
                   <span className="text-gray-600">Precio sugerido</span>
-                  <span className="font-bold text-lg">{formatUYU(preview.suggested_price)}</span>
+                  <span className="font-bold text-lg">{formatCurrency(preview.suggested_price, currency)}</span>
                 </div>
               </div>
             ) : (

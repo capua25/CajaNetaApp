@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { getStatusMessage } from '@/lib/calculator'
+import { formatCurrency } from '@/lib/currency'
 import type { Product, CalculationResult } from '@/lib/types'
 
 interface ResultDisplayProps {
@@ -11,10 +12,6 @@ interface ResultDisplayProps {
   onEdit?: () => void
   onClose?: () => void
 }
-
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
-
 
 export function ResultDisplay({ product, result, onEdit, onClose }: ResultDisplayProps) {
   return (
@@ -36,7 +33,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           <CardContent className="pt-6">
             <p className="text-sm text-gray-500 mb-1">Ganancia</p>
             <p className={`text-2xl font-bold ${result.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatUYU(result.profit)}
+              {formatCurrency(result.profit, product.currency)}
             </p>
             <p className="text-xs text-gray-400 mt-1">por unidad</p>
           </CardContent>
@@ -53,7 +50,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
         <Card className="text-center">
           <CardContent className="pt-6">
             <p className="text-sm text-gray-500 mb-1">Precio sugerido</p>
-            <p className="text-2xl font-bold text-blue-600">{formatUYU(result.suggested_price)}</p>
+            <p className="text-2xl font-bold text-blue-600">{formatCurrency(result.suggested_price, product.currency)}</p>
             <p className="text-xs text-gray-400 mt-1">para {(product.desired_margin * 100).toFixed(0)}% margen</p>
           </CardContent>
         </Card>
@@ -67,31 +64,31 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
         <CardContent className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Costo del producto</span>
-            <span>{formatUYU(product.cost)}</span>
+            <span>{formatCurrency(product.cost, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Gastos adicionales</span>
-            <span>{formatUYU(product.expenses)}</span>
+            <span>{formatCurrency(product.expenses, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm font-semibold border-t pt-2">
             <span>Costo total</span>
-            <span>{formatUYU(result.cost_total)}</span>
+            <span>{formatCurrency(result.cost_total, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Precio de venta</span>
-            <span>{formatUYU(product.price)}</span>
+            <span>{formatCurrency(product.price, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm font-semibold border-t pt-2">
             <span>Ganancia neta</span>
             <span className={result.profit >= 0 ? 'text-green-600' : 'text-red-600'}>
-              {formatUYU(result.profit)}
+              {formatCurrency(result.profit, product.currency)}
             </span>
           </div>
           {result.monthly_profit > 0 && (
             <div className="flex justify-between text-sm font-semibold border-t pt-2">
               <span>Aporte mensual</span>
               <span className={`font-semibold ${result.monthly_profit > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {formatUYU(result.monthly_profit)}
+                {formatCurrency(result.monthly_profit, product.currency)}
               </span>
             </div>
           )}

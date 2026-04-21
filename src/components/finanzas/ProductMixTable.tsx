@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
-import type { ProductWithMix } from '@/lib/types'
+import type { ProductWithMix, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface ProductMixTableProps {
   initialProducts: ProductWithMix[]
   has_quantity_data: boolean
+  currency: Currency
 }
 
 interface ProductEditState {
@@ -21,14 +23,6 @@ interface ProductEditState {
   cost: string
   expenses: string
   quantity_sold: string
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 function formatPct(value: number | null): string {
@@ -49,7 +43,7 @@ function recalcWeights(products: ProductWithMix[]): ProductWithMix[] {
   }))
 }
 
-export function ProductMixTable({ initialProducts, has_quantity_data }: ProductMixTableProps) {
+export function ProductMixTable({ initialProducts, has_quantity_data, currency }: ProductMixTableProps) {
   const router = useRouter()
   const [products, setProducts] = useState(initialProducts)
   const [confirmId, setConfirmId] = useState<string | null>(null)
@@ -368,10 +362,10 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
               ) : (
                 <tr key={p.id} className={p.quantity_sold === 0 ? 'opacity-50' : ''}>
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(p.price)}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(p.cv)}</td>
+                  <td className="px-4 py-3 text-right">{formatCurrency(p.price, currency)}</td>
+                  <td className="px-4 py-3 text-right">{formatCurrency(p.cv, currency)}</td>
                   <td className={`px-4 py-3 text-right font-medium ${(p.mc ?? 0) > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {p.mc !== null ? formatCurrency(p.mc) : '—'}
+                    {p.mc !== null ? formatCurrency(p.mc, currency) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">{formatPct(p.rc)}</td>
                   <td className="px-4 py-3 text-right">
@@ -382,10 +376,10 @@ export function ProductMixTable({ initialProducts, has_quantity_data }: ProductM
                     )}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {p.quantity_sold > 0 ? formatCurrency(p.revenue) : '—'}
+                    {p.quantity_sold > 0 ? formatCurrency(p.revenue, currency) : '—'}
                   </td>
                   <td className={`px-4 py-3 text-right font-medium ${p.quantity_sold > 0 ? ((p.mc ?? 0) >= 0 ? 'text-green-600' : 'text-red-600') : ''}`}>
-                    {p.quantity_sold > 0 ? formatCurrency((p.mc ?? 0) * p.quantity_sold) : '—'}
+                    {p.quantity_sold > 0 ? formatCurrency((p.mc ?? 0) * p.quantity_sold, currency) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {p.quantity_sold > 0 ? formatPct(p.weight) : '—'}

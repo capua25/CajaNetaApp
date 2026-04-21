@@ -5,6 +5,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { DeleteProductButton } from './DeleteProductButton'
 import { calculate } from '@/lib/calculator'
 import type { Product } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface ProductCardProps {
   product: Product
@@ -14,9 +15,6 @@ interface ProductCardProps {
   onDetail?: (product: Product) => void
   onEdit?: (product: Product) => void
 }
-
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
 
 export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
   const freeOverLimit = isFreePlan && totalProducts > 1
@@ -30,7 +28,7 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
         <div className="flex items-start justify-between">
           <div>
             <h3 className="font-semibold text-gray-900">{product.name}</h3>
-            <p className="text-sm text-gray-500">Precio: {formatUYU(product.price)}</p>
+            <p className="text-sm text-gray-500">Precio: {formatCurrency(product.price, product.currency)}</p>
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={result.status} />
@@ -60,7 +58,7 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">Ganancia</p>
-            <p className="font-semibold text-gray-900">{formatUYU(result.profit)}</p>
+            <p className="font-semibold text-gray-900">{formatCurrency(result.profit, product.currency)}</p>
           </div>
           <div>
             <p className="text-gray-500">Margen</p>
