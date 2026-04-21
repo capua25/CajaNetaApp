@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { isCurrency } from '@/lib/currency'
 import type { Recurrence } from '@/lib/types'
 
 const VALID_RECURRENCES: Recurrence[] = ['monthly', 'annual']
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json()
-  const { name, amount, recurrence } = body
+  const { name, amount, recurrence, currency } = body
 
   if (!name || amount == null || !recurrence) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -66,6 +67,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'recurrence must be monthly or annual' }, { status: 400 })
   }
 
+  if (currency !== undefined && !isCurrency(currency)) {
+    return NextResponse.json({ error: 'currency must be UYU or USD' }, { status: 400 })
+  }
+
   const { data: fixedCost, error } = await supabase
     .from('fixed_costs')
     .insert({
@@ -73,6 +78,7 @@ export async function POST(request: Request) {
       name: name.trim(),
       amount: Number(amount),
       recurrence: recurrence as Recurrence,
+      currency: currency ?? 'UYU',
     })
     .select()
     .single()
@@ -94,7 +100,7 @@ export async function PATCH(request: Request) {
   }
 
   const body = await request.json()
-  const { id, name, amount, recurrence } = body
+  const { id, name, amount, recurrence, currency } = body
 
   if (!id) {
     return NextResponse.json({ error: 'Missing id' }, { status: 400 })
@@ -121,6 +127,12 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'recurrence must be monthly or annual' }, { status: 400 })
     }
     updates.recurrence = recurrence as Recurrence
+  }
+  if (currency !== undefined) {
+    if (!isCurrency(currency)) {
+      return NextResponse.json({ error: 'currency must be UYU or USD' }, { status: 400 })
+    }
+    updates.currency = currency
   }
 
   if (Object.keys(updates).length === 0) {

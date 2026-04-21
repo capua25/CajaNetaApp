@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { isCurrency } from '@/lib/currency'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -28,7 +29,7 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { name, cost, expenses, price, desired_margin, quantity_sold } = body
+  const { name, cost, expenses, price, desired_margin, quantity_sold, currency } = body
 
   if (typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
@@ -49,6 +50,9 @@ export async function PATCH(
   if (!Number.isFinite(parsedMargin) || parsedMargin < 0 || parsedMargin >= 1) {
     return NextResponse.json({ error: 'desired_margin must be a number between 0 and 0.99' }, { status: 400 })
   }
+  if (currency !== undefined && !isCurrency(currency)) {
+    return NextResponse.json({ error: 'currency must be UYU or USD' }, { status: 400 })
+  }
 
   const { data: product, error } = await supabase
     .from('products')
@@ -59,6 +63,7 @@ export async function PATCH(
       price: Number(price),
       desired_margin: parsedMargin,
       ...(quantity_sold != null && { quantity_sold: Number(quantity_sold) }),
+      ...(currency !== undefined && { currency }),
     })
     .eq('id', id)
     .eq('user_id', user.id)
