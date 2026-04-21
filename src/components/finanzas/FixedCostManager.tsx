@@ -89,6 +89,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
       name: cost.name,
       amount: String(cost.amount),
       recurrence: cost.recurrence,
+      currency: isCurrency(cost.currency) ? cost.currency : 'UYU',
     })
     setEditError(null)
   }
