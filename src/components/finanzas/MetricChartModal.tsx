@@ -10,7 +10,7 @@ import { BreakEvenChart } from './charts/BreakEvenChart'
 import { RevenueProgressChart } from './charts/RevenueProgressChart'
 import { SafetyGauge } from './charts/SafetyGauge'
 import { MCMixChart } from './charts/MCMixChart'
-import type { FinancialSummary } from '@/lib/types'
+import type { FinancialSummary, Currency } from '@/lib/types'
 
 export type MetricKey =
   | 'break_even_units'
