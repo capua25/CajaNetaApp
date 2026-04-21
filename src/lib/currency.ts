@@ -1,4 +1,5 @@
 import type { Currency } from './types'
+export type { Currency } from './types'
 
 export const SUPPORTED_CURRENCIES: readonly Currency[] = ['UYU', 'USD'] as const
 
