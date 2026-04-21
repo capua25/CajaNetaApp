@@ -108,7 +108,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           onClick={mc_mix !== null ? () => setActiveMetric('mc_mix') : undefined}
         >
           {mc_mix !== null ? (
-            <p className="text-2xl font-bold">{formatCurrency(mc_mix)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(mc_mix, currency)}</p>
           ) : (
             <div>
               <NoData />
