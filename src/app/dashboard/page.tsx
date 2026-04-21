@@ -36,7 +36,7 @@ export default async function DashboardPage() {
         <FinanzasButton plan={plan} />
       </div>
 
-      <SalesSummaryChart products={productList} />
+      <SalesSummaryChart products={productList} currency={displayCurrency} />
 
       <DashboardProductsSection
         products={productList}
