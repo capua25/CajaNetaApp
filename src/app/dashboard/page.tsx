@@ -47,8 +47,6 @@ export default async function DashboardPage() {
         planStatus={userProfile?.plan_status}
         isFreeLimitReached={isFreeLimitReached}
         plan={plan}
-        displayCurrency={displayCurrency}
-        exchangeRate={exchangeRate}
       />
     </main>
   )
