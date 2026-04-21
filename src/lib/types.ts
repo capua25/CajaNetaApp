@@ -73,3 +73,15 @@ export interface UserProfile {
   plan_expires_at: string | null
   display_currency: Currency
 }
+
+export interface ExchangeRate {
+  id: string
+  user_id: string | null
+  from_currency: Currency
+  to_currency: Currency
+  rate: number
+  source: 'api' | 'manual'
+  effective_date: string
+  created_at: string
+  updated_at: string
+}
