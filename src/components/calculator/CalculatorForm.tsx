@@ -73,6 +73,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
         price: numPrice,
         desired_margin: numMargin,
         quantity_sold: Number(quantitySold) || 0,
+        currency,
       }),
     })
 
