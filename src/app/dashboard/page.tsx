@@ -22,6 +22,7 @@ export default async function DashboardPage() {
   const userProfile = profile as UserProfile | null
   const productList = (products ?? []) as unknown as Product[]
   const plan = (userProfile?.plan ?? 'free') as Plan
+  const displayCurrency = isCurrency(userProfile?.display_currency) ? userProfile.display_currency : 'UYU'
   const limit = PLAN_LIMITS[plan]
   const isFreeLimitReached = limit !== Infinity && productList.length >= limit
 
