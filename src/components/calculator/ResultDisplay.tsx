@@ -76,7 +76,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Precio de venta</span>
-            <span>{formatUYU(product.price)}</span>
+            <span>{formatCurrency(product.price, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm font-semibold border-t pt-2">
             <span>Ganancia neta</span>
