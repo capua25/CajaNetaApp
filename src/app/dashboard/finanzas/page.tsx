@@ -74,14 +74,6 @@ export default async function FinanzasPage() {
         </Link>
       </div>
 
-      <ExchangeRateCard
-        initialRate={rateInfo.rate}
-        initialSource={rateInfo.source}
-        initialEffectiveDate={rateInfo.effectiveDate}
-        initialStale={rateInfo.stale}
-        hasOverride={Boolean(userOverride)}
-      />
-
       <SummaryCards summary={summary} currency={displayCurrency} />
 
       <FixedCostManager initialCosts={fixedCosts ?? []} currency={displayCurrency} />
