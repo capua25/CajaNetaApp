@@ -68,7 +68,7 @@ function NoData() {
   )
 }
 
-export function SummaryCards({ summary }: SummaryCardsProps) {
+export function SummaryCards({ summary, currency }: SummaryCardsProps) {
   const [activeMetric, setActiveMetric] = useState<MetricKey | null>(null)
 
   const {
