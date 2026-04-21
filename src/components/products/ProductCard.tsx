@@ -16,9 +16,6 @@ interface ProductCardProps {
   onEdit?: (product: Product) => void
 }
 
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
-
 export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
   const freeOverLimit = isFreePlan && totalProducts > 1
   const canEdit = !freeOverLimit
