@@ -143,7 +143,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               <p className="text-xs text-gray-500">Luz, gas, embalaje, delivery...</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Precio de venta (UYU)</Label>
+              <Label htmlFor="price">Precio de venta</Label>
               <Input
                 id="price"
                 type="number"
