@@ -20,6 +20,7 @@ interface EditState {
   name: string
   amount: string
   recurrence: Recurrence
+  currency: Currency
 }
 
 interface FixedCostManagerProps {
