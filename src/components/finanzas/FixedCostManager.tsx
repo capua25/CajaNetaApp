@@ -120,6 +120,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
           name: editState.name.trim(),
           amount: parsedAmount,
           recurrence: editState.recurrence,
+          currency: editState.currency,
         }),
       })
       if (!res.ok) {
