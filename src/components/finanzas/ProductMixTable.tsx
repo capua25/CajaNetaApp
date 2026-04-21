@@ -43,7 +43,7 @@ function recalcWeights(products: ProductWithMix[]): ProductWithMix[] {
   }))
 }
 
-export function ProductMixTable({ initialProducts, has_quantity_data }: ProductMixTableProps) {
+export function ProductMixTable({ initialProducts, has_quantity_data, currency }: ProductMixTableProps) {
   const router = useRouter()
   const [products, setProducts] = useState(initialProducts)
   const [confirmId, setConfirmId] = useState<string | null>(null)
