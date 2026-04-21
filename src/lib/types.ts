@@ -1,5 +1,7 @@
 export type Plan = 'free' | 'plus' | 'pro'
 
+export type Currency = 'UYU' | 'USD'
+
 export type ProductStatus = 'success' | 'warning' | 'critical' | 'danger'
 
 export type Recurrence = 'monthly' | 'annual'
