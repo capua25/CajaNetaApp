@@ -90,6 +90,8 @@ export default async function CuentaPage({
           </CardContent>
         </Card>
       )}
+      <DisplayCurrencySection initialCurrency={displayCurrency} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Seguridad</CardTitle>
