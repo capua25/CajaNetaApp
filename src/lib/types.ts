@@ -1,5 +1,7 @@
 export type Plan = 'free' | 'plus' | 'pro'
 
+export type Currency = 'UYU' | 'USD'
+
 export type ProductStatus = 'success' | 'warning' | 'critical' | 'danger'
 
 export type Recurrence = 'monthly' | 'annual'
@@ -13,6 +15,7 @@ export interface Product {
   price: number
   desired_margin: number
   quantity_sold: number
+  currency: Currency
   created_at: string
 }
 
@@ -22,6 +25,7 @@ export interface FixedCost {
   name: string
   amount: number
   recurrence: Recurrence
+  currency: Currency
   created_at: string
 }
 
@@ -67,4 +71,17 @@ export interface UserProfile {
   plan_status: string
   mp_subscription_id: string | null
   plan_expires_at: string | null
+  display_currency: Currency
+}
+
+export interface ExchangeRate {
+  id: string
+  user_id: string | null
+  from_currency: Currency
+  to_currency: Currency
+  rate: number
+  source: 'api' | 'manual'
+  effective_date: string
+  created_at: string
+  updated_at: string
 }
