@@ -20,26 +20,42 @@ export default async function FinanzasPage() {
 
   const { data: profile } = await supabase
     .from('users')
-    .select('*')
+    .select('*, display_currency')
     .eq('id', user.id)
     .single()
 
   const userProfile = profile as UserProfile | null
   if (userProfile?.plan !== 'pro') redirect('/pricing')
 
-  const [{ data: products }, { data: fixedCosts }] = await Promise.all([
-    supabase
-      .from('products')
-      .select('id, name, price, cost, expenses, quantity_sold')
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('fixed_costs')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false }),
-  ])
+  const displayCurrency: Currency = isCurrency(userProfile.display_currency)
+    ? userProfile.display_currency
+    : 'UYU'
+  if (!isCurrency(userProfile.display_currency)) {
+    console.error('[finanzas] invalid display_currency for user', user.id)
+  }
 
-  const summary = buildFinancialSummary(
+  const [{ data: products }, { data: fixedCosts }, rateInfo, { data: userOverride }] =
+    await Promise.all([
+      supabase
+        .from('products')
+        .select('id, name, price, cost, expenses, quantity_sold, currency')
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('fixed_costs')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false }),
+      getUsdToUyuRate(user.id),
+      supabase
+        .from('exchange_rates')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('from_currency', 'USD')
+        .eq('to_currency', 'UYU')
+        .maybeSingle(),
+    ])
+
+  const summary = buildFinancialSummaryInCurrency(
     (products ?? []) as Array<{
       id: string
       name: string
@@ -47,8 +63,11 @@ export default async function FinanzasPage() {
       cost: number
       expenses: number
       quantity_sold: number
+      currency: Currency
     }>,
-    (fixedCosts ?? []) as FixedCost[]
+    (fixedCosts ?? []) as FixedCost[],
+    displayCurrency,
+    rateInfo.rate
   )
 
   return (
