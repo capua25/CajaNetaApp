@@ -67,7 +67,7 @@ export function RevenueProgressChart({
               isAbove ? 'text-green-600' : 'text-red-600'
             }`}
           >
-            {formatCurrency(actual_revenue)}
+            {formatCurrency(actual_revenue, currency)}
           </p>
         </div>
         <div className="rounded-lg bg-muted/50 p-3 space-y-1">
