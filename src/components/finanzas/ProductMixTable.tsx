@@ -362,10 +362,10 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
               ) : (
                 <tr key={p.id} className={p.quantity_sold === 0 ? 'opacity-50' : ''}>
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(p.price)}</td>
-                  <td className="px-4 py-3 text-right">{formatCurrency(p.cv)}</td>
+                  <td className="px-4 py-3 text-right">{formatCurrency(p.price, currency)}</td>
+                  <td className="px-4 py-3 text-right">{formatCurrency(p.cv, currency)}</td>
                   <td className={`px-4 py-3 text-right font-medium ${(p.mc ?? 0) > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {p.mc !== null ? formatCurrency(p.mc) : '—'}
+                    {p.mc !== null ? formatCurrency(p.mc, currency) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">{formatPct(p.rc)}</td>
                   <td className="px-4 py-3 text-right">
