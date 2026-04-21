@@ -59,7 +59,7 @@ export function BreakEvenChart({
                 <span className="font-medium">
                   {type === 'units'
                     ? `${item.value.toFixed(1)} u.`
-                    : formatCurrency(item.value)}
+                    : formatCurrency(item.value, currency)}
                 </span>
                 <span className="text-muted-foreground text-xs ml-1.5">
                   ({((item.value / beValue) * 100).toFixed(0)}%)
