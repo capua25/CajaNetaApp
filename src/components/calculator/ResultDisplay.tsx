@@ -33,7 +33,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           <CardContent className="pt-6">
             <p className="text-sm text-gray-500 mb-1">Ganancia</p>
             <p className={`text-2xl font-bold ${result.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatUYU(result.profit)}
+              {formatCurrency(result.profit, product.currency)}
             </p>
             <p className="text-xs text-gray-400 mt-1">por unidad</p>
           </CardContent>
@@ -81,7 +81,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           <div className="flex justify-between text-sm font-semibold border-t pt-2">
             <span>Ganancia neta</span>
             <span className={result.profit >= 0 ? 'text-green-600' : 'text-red-600'}>
-              {formatUYU(result.profit)}
+              {formatCurrency(result.profit, product.currency)}
             </span>
           </div>
           {result.monthly_profit > 0 && (
