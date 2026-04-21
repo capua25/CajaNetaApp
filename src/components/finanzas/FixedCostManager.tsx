@@ -170,7 +170,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
         {/* Add form */}
         {showAddForm && (
           <form onSubmit={handleAdd} className="space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div className="space-y-1">
                 <Label htmlFor="cf-name">Nombre</Label>
                 <Input
@@ -192,6 +192,14 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   required
+                />
+              </div>
+              <div className="space-y-1">
+                <CurrencySelector
+                  id="cf-currency"
+                  label="Moneda"
+                  value={addCurrency}
+                  onChange={setAddCurrency}
                 />
               </div>
               <div className="space-y-1">
