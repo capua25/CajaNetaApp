@@ -75,7 +75,7 @@ export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps
                   <span className="text-right tabular-nums text-xs text-gray-500">
                     {p.quantity_sold.toLocaleString('es-UY')} u.
                     <span className="mx-1.5 text-gray-300">·</span>
-                    {formatCurrency(revenue)}
+                    {formatCurrency(revenue, currency)}
                   </span>
                 </div>
                 {/* Units bar */}
