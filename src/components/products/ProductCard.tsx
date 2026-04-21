@@ -28,7 +28,7 @@ export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1
         <div className="flex items-start justify-between">
           <div>
             <h3 className="font-semibold text-gray-900">{product.name}</h3>
-            <p className="text-sm text-gray-500">Precio: {formatUYU(product.price)}</p>
+            <p className="text-sm text-gray-500">Precio: {formatCurrency(product.price, product.currency)}</p>
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={result.status} />
