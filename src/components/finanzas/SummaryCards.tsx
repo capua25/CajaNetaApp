@@ -93,7 +93,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           tooltip="Gastos que pagás todos los meses sin importar cuánto vendés: alquiler, sueldos, servicios. Base para calcular tu punto de equilibrio."
         >
           {total_fixed_costs_monthly > 0 ? (
-            <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(total_fixed_costs_monthly, currency)}</p>
           ) : (
             <p className="text-sm text-muted-foreground italic">
               Ingresá tus costos fijos para ver el punto de equilibrio
