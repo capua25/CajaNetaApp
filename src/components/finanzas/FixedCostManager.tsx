@@ -39,6 +39,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [recurrence, setRecurrence] = useState<Recurrence>('monthly')
+  const [addCurrency, setAddCurrency] = useState<Currency>('UYU')
 
   // Inline edit state
   const [editState, setEditState] = useState<EditState | null>(null)
