@@ -5,6 +5,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { DeleteProductButton } from './DeleteProductButton'
 import { calculate } from '@/lib/calculator'
 import type { Product } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface ProductCardProps {
   product: Product
