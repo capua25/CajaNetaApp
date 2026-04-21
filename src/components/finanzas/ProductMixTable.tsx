@@ -7,11 +7,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
-import type { ProductWithMix } from '@/lib/types'
+import type { ProductWithMix, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface ProductMixTableProps {
   initialProducts: ProductWithMix[]
   has_quantity_data: boolean
+  currency: Currency
 }
 
 interface ProductEditState {
@@ -21,14 +23,6 @@ interface ProductEditState {
   cost: string
   expenses: string
   quantity_sold: string
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 function formatPct(value: number | null): string {
