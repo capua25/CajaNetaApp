@@ -29,7 +29,7 @@ export function SalesSummaryChart({ products, currency, exchangeRate }: SalesSum
   }
 
   const sorted = [...withSales].sort((a, b) => b.price * b.quantity_sold - a.price * a.quantity_sold)
-  const maxRevenue = sorted[0]?.price * sorted[0]?.quantity_sold ?? 0
+  const maxRevenue = sorted[0].price * sorted[0].quantity_sold
   const maxUnits = Math.max(...sorted.map((p) => p.quantity_sold))
 
   return (
