@@ -10,7 +10,7 @@ import { ResultDisplay } from '@/components/calculator/ResultDisplay'
 import { CalculatorForm } from '@/components/calculator/CalculatorForm'
 import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
 import { calculate } from '@/lib/calculator'
-import type { Product, Plan } from '@/lib/types'
+import type { Product, Plan, Currency } from '@/lib/types'
 
 interface DashboardProductsSectionProps {
   products: Product[]
@@ -18,9 +18,11 @@ interface DashboardProductsSectionProps {
   planStatus?: string
   isFreeLimitReached: boolean
   plan: Plan
+  displayCurrency: Currency
+  exchangeRate: number
 }
 
-export function DashboardProductsSection({ products, isFreePlan, planStatus, isFreeLimitReached, plan }: DashboardProductsSectionProps) {
+export function DashboardProductsSection({ products, isFreePlan, planStatus, isFreeLimitReached, plan, displayCurrency, exchangeRate }: DashboardProductsSectionProps) {
   const router = useRouter()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'new' | null>(null)
