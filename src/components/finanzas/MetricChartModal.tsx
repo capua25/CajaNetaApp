@@ -58,6 +58,7 @@ export function MetricChartModal({
             break_even_units={summary.break_even_units}
             break_even_revenue={summary.break_even_revenue}
             type="units"
+            currency={currency}
           />
         )}
         {metric === 'break_even_revenue' && (
@@ -66,12 +67,14 @@ export function MetricChartModal({
             break_even_units={summary.break_even_units}
             break_even_revenue={summary.break_even_revenue}
             type="revenue"
+            currency={currency}
           />
         )}
         {metric === 'actual_revenue' && (
           <RevenueProgressChart
             actual_revenue={summary.actual_revenue}
             break_even_revenue={summary.break_even_revenue}
+            currency={currency}
           />
         )}
         {metric === 'margin_of_safety' && (
@@ -81,6 +84,7 @@ export function MetricChartModal({
           <MCMixChart
             products={summary.products}
             mc_mix={summary.mc_mix}
+            currency={currency}
           />
         )}
       </DialogContent>
