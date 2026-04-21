@@ -293,11 +293,12 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
                   ) : (
                     <tr key={cost.id}>
                       <td className="px-4 py-2 font-medium">{cost.name}</td>
-                      <td className="px-4 py-2 text-right">{formatCurrency(cost.amount)}</td>
+                      <td className="px-4 py-2 text-right">{formatCurrency(cost.amount, cost.currency)}</td>
                       <td className="px-4 py-2 text-center">{RECURRENCE_LABELS[cost.recurrence]}</td>
                       <td className="px-4 py-2 text-right">
                         {formatCurrency(
-                          cost.recurrence === 'annual' ? cost.amount / 12 : cost.amount
+                          cost.recurrence === 'annual' ? cost.amount / 12 : cost.amount,
+                          cost.currency
                         )}
                       </td>
                       <td className="px-4 py-2 text-right">
