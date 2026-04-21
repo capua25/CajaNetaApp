@@ -88,7 +88,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
             <div className="flex justify-between text-sm font-semibold border-t pt-2">
               <span>Aporte mensual</span>
               <span className={`font-semibold ${result.monthly_profit > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {formatUYU(result.monthly_profit)}
+                {formatCurrency(result.monthly_profit, product.currency)}
               </span>
             </div>
           )}
