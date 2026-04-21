@@ -1,21 +1,18 @@
 'use client'
 
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import { formatCurrency } from '@/lib/currency'
+import type { Currency } from '@/lib/types'
 
 interface RevenueProgressChartProps {
   actual_revenue: number
   break_even_revenue: number | null
+  currency: Currency
 }
 
 export function RevenueProgressChart({
   actual_revenue,
   break_even_revenue,
+  currency,
 }: RevenueProgressChartProps) {
   if (break_even_revenue === null || actual_revenue === 0) {
     return (
