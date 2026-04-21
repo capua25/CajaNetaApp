@@ -207,6 +207,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
         summary={summary}
         metric={activeMetric}
         onClose={() => setActiveMetric(null)}
+        currency={currency}
       />
     </>
   )
