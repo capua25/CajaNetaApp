@@ -217,7 +217,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Ganancia</span>
                   <span className={`font-semibold ${preview.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatUYU(preview.profit)}
+                    {formatCurrency(preview.profit, currency)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
