@@ -85,8 +85,8 @@ export function RevenueProgressChart({
         }`}
       >
         {isAbove
-          ? `Superás el equilibrio por ${formatCurrency(actual_revenue - break_even_revenue)}`
-          : `Te faltan ${formatCurrency(break_even_revenue - actual_revenue)} para alcanzar el equilibrio`}
+          ? `Superás el equilibrio por ${formatCurrency(actual_revenue - break_even_revenue, currency)}`
+          : `Te faltan ${formatCurrency(break_even_revenue - actual_revenue, currency)} para alcanzar el equilibrio`}
       </p>
     </div>
   )
