@@ -13,10 +13,6 @@ interface ResultDisplayProps {
   onClose?: () => void
 }
 
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
-
-
 export function ResultDisplay({ product, result, onEdit, onClose }: ResultDisplayProps) {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
