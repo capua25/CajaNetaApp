@@ -68,7 +68,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Gastos adicionales</span>
-            <span>{formatUYU(product.expenses)}</span>
+            <span>{formatCurrency(product.expenses, product.currency)}</span>
           </div>
           <div className="flex justify-between text-sm font-semibold border-t pt-2">
             <span>Costo total</span>
