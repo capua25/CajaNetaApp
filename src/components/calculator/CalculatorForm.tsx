@@ -130,7 +130,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="expenses">Gastos adicionales (UYU)</Label>
+              <Label htmlFor="expenses">Gastos adicionales</Label>
               <Input
                 id="expenses"
                 type="number"
