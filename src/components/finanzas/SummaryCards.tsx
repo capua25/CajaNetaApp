@@ -155,10 +155,10 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
         >
           {actual_revenue > 0 ? (
             <div>
-              <p className="text-2xl font-bold">{formatCurrency(actual_revenue)}</p>
+              <p className="text-2xl font-bold">{formatCurrency(actual_revenue, currency)}</p>
               {break_even_revenue !== null && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Equilibrio: {formatCurrency(break_even_revenue)}
+                  Equilibrio: {formatCurrency(break_even_revenue, currency)}
                 </p>
               )}
             </div>
