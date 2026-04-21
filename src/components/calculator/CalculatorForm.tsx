@@ -8,10 +8,10 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { calculate, getStatusMessage } from '@/lib/calculator'
+import { formatCurrency, isCurrency } from '@/lib/currency'
+import { CurrencySelector } from '@/components/CurrencySelector'
 import type { Product } from '@/lib/types'
-
-const formatUYU = (value: number) =>
-  new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'UYU', maximumFractionDigits: 0 }).format(value)
+import type { Currency } from '@/lib/types'
 
 interface CalculatorFormProps {
   product?: Product
