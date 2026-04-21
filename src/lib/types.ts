@@ -71,4 +71,5 @@ export interface UserProfile {
   plan_status: string
   mp_subscription_id: string | null
   plan_expires_at: string | null
+  display_currency: Currency
 }
