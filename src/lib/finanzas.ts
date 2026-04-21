@@ -195,3 +195,29 @@ export function buildFinancialSummary(
     has_quantity_data,
   }
 }
+
+// ---------------------------------------------------------------------------
+// Currency-aware builder
+// ---------------------------------------------------------------------------
+
+type ProductInput = Parameters<typeof buildFinancialSummary>[0][number]
+type ProductInputWithCurrency = ProductInput & { currency: Currency }
+
+/**
+ * Convert all products and fixed costs to displayCurrency before building
+ * the financial summary. Use when products/costs may be in different currencies.
+ */
+export function buildFinancialSummaryInCurrency(
+  products: ProductInputWithCurrency[],
+  fixedCosts: FixedCost[],
+  displayCurrency: Currency,
+  usdToUyuRate: number
+): FinancialSummary {
+  const convertedProducts = products.map((p) =>
+    convertProduct(p, displayCurrency, usdToUyuRate)
+  )
+  const convertedCosts = fixedCosts.map((c) =>
+    convertFixedCost(c, displayCurrency, usdToUyuRate)
+  )
+  return buildFinancialSummary(convertedProducts, convertedCosts)
+}
