@@ -45,7 +45,7 @@ export function MCMixChart({ products, mc_mix, currency }: MCMixChartProps) {
               <span className="font-medium truncate max-w-[50%]">{p.name}</span>
               <div className="text-right">
                 <span className="font-medium tabular-nums">
-                  {formatCurrency(p.mc as number)}
+                  {formatCurrency(p.mc as number, currency)}
                 </span>
                 {p.rc !== null && (
                   <span className="text-muted-foreground text-xs ml-1.5">
