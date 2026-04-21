@@ -45,13 +45,6 @@ export default async function FinanzasPage() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false }),
       getUsdToUyuRate(user.id),
-      supabase
-        .from('exchange_rates')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('from_currency', 'USD')
-        .eq('to_currency', 'UYU')
-        .maybeSingle(),
     ])
 
   const summary = buildFinancialSummaryInCurrency(
