@@ -4,6 +4,7 @@ import { DashboardProductsSection } from '@/components/dashboard/DashboardProduc
 import { FinanzasButton } from '@/components/dashboard/FinanzasButton'
 import { SalesSummaryChart } from '@/components/dashboard/SalesSummaryChart'
 import { PLAN_LIMITS } from '@/lib/plan-config'
+import { isCurrency } from '@/lib/currency'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
 export default async function DashboardPage() {
