@@ -1,20 +1,14 @@
 import { Info } from 'lucide-react'
 import { Tooltip } from '@/components/ui/tooltip'
-import type { Product } from '@/lib/types'
-
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import type { Product, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface SalesSummaryChartProps {
   products: Product[]
+  currency: Currency
 }
 
-export function SalesSummaryChart({ products }: SalesSummaryChartProps) {
+export function SalesSummaryChart({ products, currency }: SalesSummaryChartProps) {
   const withSales = products.filter((p) => p.quantity_sold > 0)
 
   const totalUnits = withSales.reduce((acc, p) => acc + p.quantity_sold, 0)
