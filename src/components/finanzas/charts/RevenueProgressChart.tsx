@@ -53,7 +53,7 @@ export function RevenueProgressChart({
             className="absolute -translate-x-1/2"
             style={{ left: `${bePct}%` }}
           >
-            Equilibrio: {formatCurrency(break_even_revenue)}
+            Equilibrio: {formatCurrency(break_even_revenue, currency)}
           </span>
         </div>
       </div>
