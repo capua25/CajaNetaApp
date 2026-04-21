@@ -117,7 +117,7 @@ export function ExchangeRateCard({
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Tasa actual</span>
-          <span className="font-medium">1 USD = {rate} UYU</span>
+          <span className="font-medium">1 USD = {rate.toFixed(3)} UYU</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
