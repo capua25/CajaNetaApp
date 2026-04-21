@@ -33,7 +33,7 @@ export default async function FinanzasPage() {
     console.error('[finanzas] invalid display_currency for user', user.id)
   }
 
-  const [{ data: products }, { data: fixedCosts }, rateInfo, { data: userOverride }] =
+  const [{ data: products }, { data: fixedCosts }, rateInfo] =
     await Promise.all([
       supabase
         .from('products')
