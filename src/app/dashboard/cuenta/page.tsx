@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { DisplayCurrencySection } from '@/components/DisplayCurrencySection'
+import { isCurrency, type Currency } from '@/lib/currency'
 import { BillingCard } from '@/components/billing/BillingCard'
 import { PendingPlanPoller } from '@/components/billing/PendingPlanPoller'
 import { PreapprovalActivator } from '@/components/billing/PreapprovalActivator'
