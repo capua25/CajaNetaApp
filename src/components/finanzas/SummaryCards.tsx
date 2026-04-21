@@ -141,7 +141,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           onClick={break_even_revenue !== null ? () => setActiveMetric('break_even_revenue') : undefined}
         >
           {break_even_revenue !== null ? (
-            <p className="text-2xl font-bold">{formatCurrency(break_even_revenue)}</p>
+            <p className="text-2xl font-bold">{formatCurrency(break_even_revenue, currency)}</p>
           ) : (
             <NoData />
           )}
