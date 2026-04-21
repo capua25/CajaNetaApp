@@ -1,21 +1,15 @@
 'use client'
 
-import type { ProductWithMix } from '@/lib/types'
-
-function formatCurrency(v: number) {
-  return new Intl.NumberFormat('es-UY', {
-    style: 'currency',
-    currency: 'UYU',
-    maximumFractionDigits: 0,
-  }).format(v)
-}
+import type { ProductWithMix, Currency } from '@/lib/types'
+import { formatCurrency } from '@/lib/currency'
 
 interface MCMixChartProps {
   products: ProductWithMix[]
   mc_mix: number | null
+  currency: Currency
 }
 
-export function MCMixChart({ products, mc_mix }: MCMixChartProps) {
+export function MCMixChart({ products, mc_mix, currency }: MCMixChartProps) {
   if (mc_mix === null) {
     return (
       <p className="text-sm text-muted-foreground italic py-4">
