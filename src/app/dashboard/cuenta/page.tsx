@@ -104,6 +104,14 @@ export default async function CuentaPage({
       )}
       <DisplayCurrencySection initialCurrency={displayCurrency} />
 
+      <ExchangeRateCard
+        initialRate={rateInfo.rate}
+        initialSource={rateInfo.source}
+        initialEffectiveDate={rateInfo.effectiveDate}
+        initialStale={rateInfo.stale}
+        hasOverride={Boolean(userOverride)}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Seguridad</CardTitle>
