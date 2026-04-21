@@ -50,7 +50,7 @@ export function ResultDisplay({ product, result, onEdit, onClose }: ResultDispla
         <Card className="text-center">
           <CardContent className="pt-6">
             <p className="text-sm text-gray-500 mb-1">Precio sugerido</p>
-            <p className="text-2xl font-bold text-blue-600">{formatUYU(result.suggested_price)}</p>
+            <p className="text-2xl font-bold text-blue-600">{formatCurrency(result.suggested_price, product.currency)}</p>
             <p className="text-xs text-gray-400 mt-1">para {(product.desired_margin * 100).toFixed(0)}% margen</p>
           </CardContent>
         </Card>
