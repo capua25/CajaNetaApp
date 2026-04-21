@@ -117,6 +117,14 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
               />
             </div>
             <div className="space-y-2">
+              <CurrencySelector
+                id="currency"
+                label="Moneda"
+                value={currency}
+                onChange={setCurrency}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="cost">Costo</Label>
               <Input
                 id="cost"
