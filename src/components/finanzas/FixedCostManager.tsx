@@ -62,7 +62,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
       const res = await fetch('/api/fixed-costs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), amount: parsedAmount, recurrence }),
+        body: JSON.stringify({ name: name.trim(), amount: parsedAmount, recurrence, currency: addCurrency }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -72,6 +72,7 @@ export function FixedCostManager({ initialCosts, currency }: FixedCostManagerPro
       setName('')
       setAmount('')
       setRecurrence('monthly')
+      setAddCurrency('UYU')
       setShowAddForm(false)
       setCosts(prev => [newCost, ...prev])
       router.refresh()
