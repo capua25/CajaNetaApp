@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CurrencySelector } from '@/components/CurrencySelector'
 import type { FixedCost, Recurrence, Currency } from '@/lib/types'
-import { formatCurrency } from '@/lib/currency'
+import { formatCurrency, isCurrency } from '@/lib/currency'
 
 const RECURRENCE_LABELS: Record<Recurrence, string> = {
   monthly: 'Mensual',
