@@ -25,6 +25,7 @@ export interface FixedCost {
   name: string
   amount: number
   recurrence: Recurrence
+  currency: Currency
   created_at: string
 }
 
