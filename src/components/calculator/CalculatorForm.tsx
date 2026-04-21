@@ -226,7 +226,7 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
                 </div>
                 <div className="flex items-center justify-between border-t pt-4">
                   <span className="text-gray-600">Precio sugerido</span>
-                  <span className="font-bold text-lg">{formatUYU(preview.suggested_price)}</span>
+                  <span className="font-bold text-lg">{formatCurrency(preview.suggested_price, currency)}</span>
                 </div>
               </div>
             ) : (
