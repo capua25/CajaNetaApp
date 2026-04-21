@@ -174,7 +174,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
         >
           {has_quantity_data ? (
             <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatCurrency(total_net_profit)}
+              {formatCurrency(total_net_profit, currency)}
             </p>
           ) : (
             <NoData />
