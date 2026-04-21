@@ -31,12 +31,14 @@ interface MetricChartModalProps {
   summary: FinancialSummary
   metric: MetricKey | null
   onClose: () => void
+  currency: Currency
 }
 
 export function MetricChartModal({
   summary,
   metric,
   onClose,
+  currency,
 }: MetricChartModalProps) {
   return (
     <Dialog
