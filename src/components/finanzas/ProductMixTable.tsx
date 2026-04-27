@@ -266,7 +266,15 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
           open={bulkSalesOpen}
           onClose={() => setBulkSalesOpen(false)}
           products={products}
-          onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
+          onSuccess={(updates) => {
+            setProducts(prev => recalcWeights(prev.map(p => {
+              const u = updates.find(u => u.id === p.id)
+              if (!u) return p
+              return { ...p, quantity_sold: u.quantity_sold, revenue: p.price * u.quantity_sold }
+            })))
+            setBulkSalesOpen(false)
+            router.refresh()
+          }}
         />
 
         {products.length === 0 ? (
