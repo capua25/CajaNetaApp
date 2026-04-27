@@ -88,7 +88,7 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
         open={bulkSalesOpen}
         onClose={() => setBulkSalesOpen(false)}
         products={products}
-        onSuccess={() => { setBulkSalesOpen(false); router.refresh() }}
+        onSuccess={(_updates) => { setBulkSalesOpen(false); router.refresh() }}
       />
 
       <Dialog open={modalMode !== null} onOpenChange={(open) => { if (!open) closeModal() }}>
