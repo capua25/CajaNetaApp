@@ -102,7 +102,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
         id: created.id, name: created.name, price, cost, expenses,
         cv, mc, rc, quantity_sold, revenue, weight: 0,
       }, ...prev]))
-      setNewName(''); setNewPrice(''); setNewCost(''); setNewExpenses(''); setNewQty('')
+      setNewName(''); setNewPrice(''); setNewCost(''); setNewExpenses(''); setNewQty(''); setNewCurrency('UYU')
       setShowAddForm(false)
       router.refresh()
     } catch (err) {
