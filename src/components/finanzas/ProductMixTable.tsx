@@ -24,6 +24,7 @@ interface ProductEditState {
   cost: string
   expenses: string
   quantity_sold: string
+  currency: Currency
 }
 
 function formatPct(value: number | null): string {
