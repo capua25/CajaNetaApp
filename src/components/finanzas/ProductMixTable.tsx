@@ -132,6 +132,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
       cost: String(p.cost),
       expenses: String(p.expenses),
       quantity_sold: String(p.quantity_sold),
+      currency: p.currency ?? 'UYU',
     })
     setEditError(null)
   }
