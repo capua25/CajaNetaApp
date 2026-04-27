@@ -158,6 +158,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
           expenses: Number(editState.expenses),
           quantity_sold: parseInt(editState.quantity_sold) || 0,
           desired_margin: 0.3,
+          currency: editState.currency,
         }),
       })
       if (!res.ok) {
