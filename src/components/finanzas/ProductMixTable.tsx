@@ -179,7 +179,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
       setProducts(prev =>
         recalcWeights(prev.map(p => {
           if (p.id !== updated.id) return p
-          return { id: updated.id, name: updated.name, price, cost, expenses, cv, mc, rc, quantity_sold, revenue, weight: 0 }
+          return { id: updated.id, name: updated.name, price, cost, expenses, currency: updated.currency ?? 'UYU', cv, mc, rc, quantity_sold, revenue, weight: 0 }
         }))
       )
       setEditState(null)
