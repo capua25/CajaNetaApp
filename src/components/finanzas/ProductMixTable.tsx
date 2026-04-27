@@ -62,6 +62,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
   const [newCost, setNewCost] = useState('')
   const [newExpenses, setNewExpenses] = useState('')
   const [newQty, setNewQty] = useState('')
+  const [newCurrency, setNewCurrency] = useState<Currency>('UYU')
   const [addSubmitting, setAddSubmitting] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
 
