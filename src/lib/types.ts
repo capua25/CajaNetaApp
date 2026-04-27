@@ -35,6 +35,7 @@ export interface ProductWithMix {
   price: number
   cost: number
   expenses: number
+  currency: Currency
   cv: number          // cost + expenses
   mc: number | null   // price - cv (null if mc <= 0)
   rc: number | null   // mc / price (null if price === 0)
