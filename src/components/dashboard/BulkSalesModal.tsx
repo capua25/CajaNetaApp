@@ -15,7 +15,7 @@ interface BulkSalesModalProps {
   open: boolean
   onClose: () => void
   products: ProductEntry[]
-  onSuccess: () => void
+  onSuccess: (updates: Array<{ id: string; quantity_sold: number }>) => void
 }
 
 export function BulkSalesModal({ open, onClose, products, onSuccess }: BulkSalesModalProps) {
