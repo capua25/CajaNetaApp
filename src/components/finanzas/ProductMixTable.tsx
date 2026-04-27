@@ -100,6 +100,7 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
       const revenue = price * quantity_sold
       setProducts(prev => recalcWeights([{
         id: created.id, name: created.name, price, cost, expenses,
+        currency: created.currency ?? 'UYU',
         cv, mc, rc, quantity_sold, revenue, weight: 0,
       }, ...prev]))
       setNewName(''); setNewPrice(''); setNewCost(''); setNewExpenses(''); setNewQty(''); setNewCurrency('UYU')
