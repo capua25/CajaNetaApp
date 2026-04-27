@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BulkSalesModal } from '@/components/dashboard/BulkSalesModal'
+import { CurrencySelector } from '@/components/CurrencySelector'
 import type { ProductWithMix, Currency } from '@/lib/types'
 import { formatCurrency } from '@/lib/currency'
 
