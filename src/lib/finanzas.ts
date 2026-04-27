@@ -52,6 +52,7 @@ export function buildProductMix(
     cost: number
     expenses: number
     quantity_sold: number
+    currency?: Currency
   }>
 ): ProductWithMix[] {
   const totalQuantity = products.reduce((sum, p) => sum + p.quantity_sold, 0)
@@ -70,6 +71,7 @@ export function buildProductMix(
       price: p.price,
       cost: p.cost,
       expenses: p.expenses,
+      currency: p.currency ?? 'UYU',
       cv,
       mc,
       rc,
