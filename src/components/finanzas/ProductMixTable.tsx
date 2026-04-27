@@ -241,6 +241,13 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
               <Label htmlFor="new-qty">Unidades vendidas</Label>
               <Input id="new-qty" type="number" min="0" step="1" value={newQty} onChange={e => setNewQty(e.target.value)} />
             </div>
+            <CurrencySelector
+              id="new-currency"
+              label="Moneda"
+              value={newCurrency}
+              onChange={setNewCurrency}
+              disabled={addSubmitting}
+            />
             <div className="flex gap-2">
               <Button type="submit" size="sm" disabled={addSubmitting}>
                 {addSubmitting ? 'Guardando...' : 'Guardar'}
