@@ -352,6 +352,13 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
                           required
                         />
                       </div>
+                      <CurrencySelector
+                        id={`edit-currency-${p.id}`}
+                        label="Moneda"
+                        value={editState.currency}
+                        onChange={(v) => setEditState({ ...editState, currency: v })}
+                        disabled={editSubmitting}
+                      />
                       <div className="flex gap-2">
                         <Button type="submit" size="sm" disabled={editSubmitting}>
                           {editSubmitting ? 'Guardando...' : 'Guardar'}
