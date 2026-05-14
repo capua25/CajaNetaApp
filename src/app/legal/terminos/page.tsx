@@ -7,8 +7,8 @@ export default function TerminosPage() {
     <LegalPage title="Términos y Condiciones de Uso" lastUpdated="2 de abril de 2026">
       <LegalSection title="1. Introducción">
         <p>
-          Estos Términos y Condiciones regulan el acceso y uso de la aplicación "Caja Neta" (en
-          adelante, "la Plataforma").
+          Estos Términos y Condiciones regulan el acceso y uso de la aplicación &ldquo;Caja Neta&rdquo; (en
+          adelante, &ldquo;la Plataforma&rdquo;).
         </p>
         <p>
           Al utilizar la Plataforma, el usuario acepta estos términos en su totalidad. Si no está de

@@ -11,13 +11,12 @@ import { formatCurrency } from '@/lib/currency'
 interface ProductCardProps {
   product: Product
   isFreePlan: boolean
-  planStatus?: string
   totalProducts?: number
   onDetail?: (product: Product) => void
   onEdit?: (product: Product) => void
 }
 
-export function ProductCard({ product, isFreePlan, planStatus, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
+export function ProductCard({ product, isFreePlan, totalProducts = 1, onDetail, onEdit }: ProductCardProps) {
   const freeOverLimit = isFreePlan && totalProducts > 1
   const canEdit = !freeOverLimit
   const canDelete = !isFreePlan || freeOverLimit

@@ -77,7 +77,6 @@ export default async function CuentaPage({
         <BillingCard
           plan={plan}
           planStatus={userProfile.plan_status ?? 'active'}
-          mpSubscriptionId={userProfile.mp_subscription_id ?? null}
           nextPaymentDate={nextPaymentDate}
         />
       ) : userProfile.plan_status === 'pending' ? (
@@ -108,7 +107,6 @@ export default async function CuentaPage({
         initialRate={rateInfo.rate}
         initialSource={rateInfo.source}
         initialEffectiveDate={rateInfo.effectiveDate}
-        initialStale={rateInfo.stale}
         hasOverride={Boolean(userOverride)}
       />
 

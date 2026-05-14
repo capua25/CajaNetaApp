@@ -11,7 +11,6 @@ interface ExchangeRateCardProps {
   initialRate: number
   initialSource: 'api' | 'manual' | 'stale'
   initialEffectiveDate: string
-  initialStale: boolean
   hasOverride: boolean
 }
 
@@ -28,7 +27,6 @@ export function ExchangeRateCard({
   initialRate,
   initialSource,
   initialEffectiveDate,
-  initialStale,
   hasOverride: initialHasOverride,
 }: ExchangeRateCardProps) {
   const router = useRouter()

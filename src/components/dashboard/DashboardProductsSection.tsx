@@ -15,12 +15,11 @@ import type { Product, Plan } from '@/lib/types'
 interface DashboardProductsSectionProps {
   products: Product[]
   isFreePlan: boolean
-  planStatus?: string
   isFreeLimitReached: boolean
   plan: Plan
 }
 
-export function DashboardProductsSection({ products, isFreePlan, planStatus, isFreeLimitReached, plan }: DashboardProductsSectionProps) {
+export function DashboardProductsSection({ products, isFreePlan, isFreeLimitReached, plan }: DashboardProductsSectionProps) {
   const router = useRouter()
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [modalMode, setModalMode] = useState<'detail' | 'edit' | 'new' | null>(null)
@@ -78,7 +77,6 @@ export function DashboardProductsSection({ products, isFreePlan, planStatus, isF
         <ProductList
           products={products}
           isFreePlan={isFreePlan}
-          planStatus={planStatus}
           onDetail={openDetail}
           onEdit={openEdit}
         />

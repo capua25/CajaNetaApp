@@ -25,10 +25,9 @@ interface EditState {
 
 interface FixedCostManagerProps {
   initialCosts: FixedCost[]
-  currency: Currency
 }
 
-export function FixedCostManager({ initialCosts, currency }: FixedCostManagerProps) {
+export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
   const router = useRouter()
   const [costs, setCosts] = useState<FixedCost[]>(initialCosts)
   const [submitting, setSubmitting] = useState(false)

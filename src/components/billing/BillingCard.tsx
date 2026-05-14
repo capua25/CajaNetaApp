@@ -11,7 +11,6 @@ import type { Plan } from '@/lib/types'
 interface BillingCardProps {
   plan: Plan
   planStatus: string
-  mpSubscriptionId: string | null
   nextPaymentDate?: string | null
 }
 
@@ -21,7 +20,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: 'default' | 'second
   paused: { label: 'Pausado', variant: 'outline' },
 }
 
-export function BillingCard({ plan, planStatus: initialStatus, mpSubscriptionId, nextPaymentDate }: BillingCardProps) {
+export function BillingCard({ plan, planStatus: initialStatus, nextPaymentDate }: BillingCardProps) {
   const [planStatus, setPlanStatus] = useState(initialStatus)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)

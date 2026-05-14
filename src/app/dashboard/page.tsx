@@ -44,7 +44,6 @@ export default async function DashboardPage() {
       <DashboardProductsSection
         products={productList}
         isFreePlan={userProfile?.plan === 'free'}
-        planStatus={userProfile?.plan_status}
         isFreeLimitReached={isFreeLimitReached}
         plan={plan}
       />

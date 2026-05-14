@@ -76,7 +76,7 @@ export default async function FinanzasPage() {
 
       <SummaryCards summary={summary} currency={displayCurrency} />
 
-      <FixedCostManager initialCosts={fixedCosts ?? []} currency={displayCurrency} />
+      <FixedCostManager initialCosts={fixedCosts ?? []} />
 
       <ProductMixTable initialProducts={summary.products} has_quantity_data={summary.has_quantity_data} currency={displayCurrency} />
     </main>
