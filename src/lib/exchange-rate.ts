@@ -1,5 +1,6 @@
 // Server-only — do not import from client components
 
+import { unstable_cache, revalidateTag } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
 
 export const FALLBACK_USD_UYU_RATE = 40.0
@@ -20,11 +21,11 @@ function isStale(effectiveDateISO: string): boolean {
 }
 
 /**
- * Resolve the active USD->UYU rate for a user.
+ * Internal (uncached) implementation. Do not export — callers use getUsdToUyuRate.
  * Hierarchy: user override -> global row -> hardcoded fallback 40.0.
  * Never throws. EC7: null/undefined userId returns global row.
  */
-export async function getUsdToUyuRate(
+async function getUsdToUyuRateUncached(
   userId: string | null | undefined
 ): Promise<ExchangeRateResult> {
   const supabase = createServiceClient()
@@ -79,6 +80,21 @@ export async function getUsdToUyuRate(
 }
 
 /**
+ * Resolve the active USD->UYU rate for a user.
+ * Cached with a 1-hour TTL (revalidate: 3600). The userId is part of the
+ * cache key so each user gets an independent entry. The tag 'exchange-rate'
+ * allows the daily cron to invalidate all entries when the global rate changes.
+ */
+export const getUsdToUyuRate = unstable_cache(
+  getUsdToUyuRateUncached,
+  ['exchange-rate'],
+  {
+    revalidate: 3600,
+    tags: ['exchange-rate'],
+  }
+)
+
+/**
  * Fetch latest USD->UYU rate from open.er-api.com and upsert as the global row.
  * Called by the daily cron. Throws on failure.
  */
@@ -124,6 +140,11 @@ export async function refreshGlobalUsdToUyuRate(): Promise<ExchangeRateResult> {
   if (insertError) {
     throw new Error(`Failed to insert global rate row: ${insertError.message}`)
   }
+
+  // Invalidate all per-user cache entries so the new global rate propagates
+  // immediately instead of waiting for the 1-hour TTL to expire.
+  // Second arg 'max' is required by the Next 16 type signature (replaces deprecated 1-arg form).
+  revalidateTag('exchange-rate', 'max')
 
   return {
     rate: uyuRate,
