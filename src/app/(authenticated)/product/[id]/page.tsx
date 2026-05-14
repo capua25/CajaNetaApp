@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/get-user'
 import { calculate } from '@/lib/calculator'
 import { ResultDisplay } from '@/components/calculator/ResultDisplay'
 import type { Product } from '@/lib/types'
@@ -10,11 +11,10 @@ export default async function ProductPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   // user is guaranteed by (authenticated) layout — non-null assertion is safe
 
+  const supabase = await createClient()
   const { data: product, error } = await supabase
     .from('products')
     .select('*')

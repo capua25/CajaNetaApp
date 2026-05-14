@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/get-user'
 import { buildFinancialSummaryInCurrency } from '@/lib/finanzas'
 import { getUsdToUyuRate } from '@/lib/exchange-rate'
 import { isCurrency, type Currency } from '@/lib/currency'
@@ -11,12 +12,11 @@ import { FixedCostManager } from '@/components/finanzas/FixedCostManager'
 import type { UserProfile, FixedCost } from '@/lib/types'
 
 export default async function FinanzasPage() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   // user is guaranteed by (authenticated) layout — non-null assertion is safe
   const userId = user!.id
 
+  const supabase = await createClient()
   const { data: profile } = await supabase
     .from('users')
     .select('*, display_currency')

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/get-user'
 import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
 import { FinanzasButton } from '@/components/dashboard/FinanzasButton'
 import { SalesSummaryChart } from '@/components/dashboard/SalesSummaryChart'
@@ -8,12 +9,11 @@ import { getUsdToUyuRate } from '@/lib/exchange-rate'
 import type { UserProfile, Product, Plan } from '@/lib/types'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   // user is guaranteed by (authenticated) layout — non-null assertion is safe
   const userId = user!.id
 
+  const supabase = await createClient()
   const [{ data: profile }, { data: products }, exchangeRateResult] = await Promise.all([
     supabase.from('users').select('*').eq('id', userId).single(),
     supabase.from('products').select('id, name, cost, expenses, price, desired_margin, quantity_sold, currency, created_at').eq('user_id', userId).order('created_at', { ascending: false }),

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/get-user'
 import { DisplayCurrencySection } from '@/components/DisplayCurrencySection'
 import { ExchangeRateCard } from '@/components/ExchangeRateCard'
 import { isCurrency, type Currency } from '@/lib/currency'
@@ -20,12 +21,11 @@ export default async function CuentaPage({
 }: {
   searchParams: Promise<{ preapproval_id?: string }>
 }) {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   // user is guaranteed by (authenticated) layout — non-null assertion is safe
   const userId = user!.id
 
+  const supabase = await createClient()
   const [{ data: profile }, rateInfo, { data: userOverride }] = await Promise.all([
     supabase
       .from('users')

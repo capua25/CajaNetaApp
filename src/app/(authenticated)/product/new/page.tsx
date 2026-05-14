@@ -1,15 +1,16 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/get-user'
 import { CalculatorForm } from '@/components/calculator/CalculatorForm'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export default async function NewProductPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   // user is guaranteed by (authenticated) layout — non-null assertion is safe
   const userId = user!.id
 
+  const supabase = await createClient()
   const [{ data: profile }, { count }] = await Promise.all([
     supabase.from('users').select('plan').eq('id', userId).single(),
     supabase.from('products').select('*', { count: 'exact', head: true }).eq('user_id', userId),
