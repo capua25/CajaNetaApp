@@ -22,21 +22,21 @@ export default async function CuentaPage({
 }) {
   const supabase = await createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-  if (!user) redirect('/auth/login')
+  const { data: { user } } = await supabase.auth.getUser()
+  // user is guaranteed by (authenticated) layout — non-null assertion is safe
+  const userId = user!.id
 
   const [{ data: profile }, rateInfo, { data: userOverride }] = await Promise.all([
     supabase
       .from('users')
       .select('id, email, plan, plan_status, mp_subscription_id, plan_expires_at, display_currency')
-      .eq('id', user.id)
+      .eq('id', userId)
       .single(),
-    getUsdToUyuRate(user.id),
+    getUsdToUyuRate(userId),
     supabase
       .from('exchange_rates')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('from_currency', 'USD')
       .eq('to_currency', 'UYU')
       .maybeSingle(),

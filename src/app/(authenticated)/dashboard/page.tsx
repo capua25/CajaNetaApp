@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardProductsSection } from '@/components/dashboard/DashboardProductsSection'
 import { FinanzasButton } from '@/components/dashboard/FinanzasButton'
@@ -11,14 +10,14 @@ import type { UserProfile, Product, Plan } from '@/lib/types'
 export default async function DashboardPage() {
   const supabase = await createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-  if (!user) redirect('/auth/login')
+  const { data: { user } } = await supabase.auth.getUser()
+  // user is guaranteed by (authenticated) layout — non-null assertion is safe
+  const userId = user!.id
 
   const [{ data: profile }, { data: products }, exchangeRateResult] = await Promise.all([
-    supabase.from('users').select('*').eq('id', user.id).single(),
-    supabase.from('products').select('id, name, cost, expenses, price, desired_margin, quantity_sold, currency, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-    getUsdToUyuRate(user.id),
+    supabase.from('users').select('*').eq('id', userId).single(),
+    supabase.from('products').select('id, name, cost, expenses, price, desired_margin, quantity_sold, currency, created_at').eq('user_id', userId).order('created_at', { ascending: false }),
+    getUsdToUyuRate(userId),
   ])
 
   const userProfile = profile as UserProfile | null
@@ -34,7 +33,7 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mis productos</h1>
-          <p className="text-gray-500 text-sm mt-1">{user.email}</p>
+          <p className="text-gray-500 text-sm mt-1">{user!.email}</p>
         </div>
         <FinanzasButton plan={plan} />
       </div>

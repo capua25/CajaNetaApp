@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { calculate } from '@/lib/calculator'
 import { ResultDisplay } from '@/components/calculator/ResultDisplay'
@@ -12,15 +12,14 @@ export default async function ProductPage({
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-  if (!user) redirect('/auth/login')
+  const { data: { user } } = await supabase.auth.getUser()
+  // user is guaranteed by (authenticated) layout — non-null assertion is safe
 
   const { data: product, error } = await supabase
     .from('products')
     .select('*')
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
     .single()
 
   if (error || !product) notFound()

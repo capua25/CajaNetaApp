@@ -13,14 +13,14 @@ import type { UserProfile, FixedCost } from '@/lib/types'
 export default async function FinanzasPage() {
   const supabase = await createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-  if (!user) redirect('/auth/login')
+  const { data: { user } } = await supabase.auth.getUser()
+  // user is guaranteed by (authenticated) layout — non-null assertion is safe
+  const userId = user!.id
 
   const { data: profile } = await supabase
     .from('users')
     .select('*, display_currency')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   const userProfile = profile as UserProfile | null
@@ -30,7 +30,7 @@ export default async function FinanzasPage() {
     ? userProfile.display_currency
     : 'UYU'
   if (!isCurrency(userProfile.display_currency)) {
-    console.error('[finanzas] invalid display_currency for user', user.id)
+    console.error('[finanzas] invalid display_currency for user', userId)
   }
 
   const [{ data: products }, { data: fixedCosts }, rateInfo] =
@@ -42,9 +42,9 @@ export default async function FinanzasPage() {
       supabase
         .from('fixed_costs')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false }),
-      getUsdToUyuRate(user.id),
+      getUsdToUyuRate(userId),
     ])
 
   const summary = buildFinancialSummaryInCurrency(
@@ -67,7 +67,7 @@ export default async function FinanzasPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Finanzas Avanzadas</h1>
-          <p className="text-gray-500 text-sm mt-1">{user.email}</p>
+          <p className="text-gray-500 text-sm mt-1">{user!.email}</p>
         </div>
         <Link href="/dashboard">
           <Button variant="outline" size="sm">Mis productos</Button>

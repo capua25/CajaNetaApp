@@ -6,11 +6,15 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  const protectedPaths = ['/dashboard', '/product']
+  const PROTECTED_PREFIXES = ['/dashboard', '/product']
   const authPaths = ['/auth/login', '/auth/register']
+  const REDIRECT_IF_AUTH = ['/']
 
-  const isProtected = protectedPaths.some(p => pathname.startsWith(p))
-  const isAuthPath = authPaths.some(p => pathname.startsWith(p))
+  const isProtected = PROTECTED_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(p + '/'),
+  )
+  const isAuthPath = authPaths.some((p) => pathname.startsWith(p))
+  const isAuthRedirectTarget = REDIRECT_IF_AUTH.includes(pathname)
 
   if (isProtected && !user) {
     const redirectUrl = request.nextUrl.clone()
@@ -18,7 +22,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  if (isAuthPath && user) {
+  if ((isAuthPath || isAuthRedirectTarget) && user) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/dashboard'
     return NextResponse.redirect(redirectUrl)

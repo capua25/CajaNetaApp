@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, Calculator, DollarSign } from 'lucide-react'
 import { PLAN_CONFIGS } from '@/lib/plan-config'
-import { createClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
   title: 'Calculadora de Precios para Emprendedores — Caja Neta',
@@ -28,12 +28,7 @@ function CheckIcon() {
   )
 }
 
-export default async function LandingPage() {
-  const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-  if (user) redirect('/dashboard')
-
+export default function LandingPage() {
   return (
     <main>
       {/* Hero */}
