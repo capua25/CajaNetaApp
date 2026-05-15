@@ -27,12 +27,12 @@ export default function GlobalError({
               <AlertTriangle className="h-12 w-12 text-destructive" aria-hidden="true" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-gray-900">Algo se rompió</h1>
-              <p className="text-gray-500 text-sm">
+              <h1 className="text-2xl font-bold text-foreground">Algo se rompió</h1>
+              <p className="text-muted-foreground text-sm">
                 Tuvimos un problema inesperado. Probá recargar la página; si persiste, escribinos.
               </p>
               {error.digest ? (
-                <p className="text-xs text-gray-400 font-mono">ref: {error.digest}</p>
+                <p className="text-xs text-muted-foreground font-mono">ref: {error.digest}</p>
               ) : null}
             </div>
             <button
