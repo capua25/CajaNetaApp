@@ -9,8 +9,8 @@ export default function NotFound() {
           <FileQuestion className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">Página no encontrada</h1>
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-2xl font-bold text-foreground">Página no encontrada</h1>
+          <p className="text-muted-foreground text-sm">
             La página que buscás no existe o se movió de lugar.
           </p>
         </div>

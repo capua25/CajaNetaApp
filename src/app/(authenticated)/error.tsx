@@ -21,12 +21,12 @@ export default function AuthenticatedError({
       <div className="flex flex-col items-center justify-center text-center py-16 space-y-6">
         <AlertTriangle className="h-12 w-12 text-destructive" aria-hidden="true" />
         <div className="space-y-2 max-w-md">
-          <h1 className="text-2xl font-bold text-gray-900">Algo se rompió</h1>
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-2xl font-bold text-foreground">Algo se rompió</h1>
+          <p className="text-muted-foreground text-sm">
             Tuvimos un problema cargando esta sección. Probá reintentar o volvé al panel.
           </p>
           {error.digest ? (
-            <p className="text-xs text-gray-400 font-mono">ref: {error.digest}</p>
+            <p className="text-xs text-muted-foreground font-mono">ref: {error.digest}</p>
           ) : null}
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
