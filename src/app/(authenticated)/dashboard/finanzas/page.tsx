@@ -38,6 +38,7 @@ export default async function FinanzasPage() {
       supabase
         .from('products')
         .select('id, name, price, cost, expenses, quantity_sold, currency')
+        .eq('user_id', userId)
         .order('created_at', { ascending: false }),
       supabase
         .from('fixed_costs')
