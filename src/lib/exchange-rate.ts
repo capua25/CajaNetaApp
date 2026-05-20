@@ -81,18 +81,25 @@ async function getUsdToUyuRateUncached(
 
 /**
  * Resolve the active USD->UYU rate for a user.
- * Cached with a 1-hour TTL (revalidate: 3600). The userId is part of the
- * cache key so each user gets an independent entry. The tag 'exchange-rate'
- * allows the daily cron to invalidate all entries when the global rate changes.
+ * Cached with a 1-hour TTL (revalidate: 3600). Each userId gets an independent
+ * cache entry (via keyParts) and an independent tag `exchange-rate-<userId>`
+ * so mutations can invalidate only that user's entry. The global tag
+ * 'exchange-rate' is also attached so the daily cron can invalidate all entries
+ * at once with revalidateTag('exchange-rate', 'max').
  */
-export const getUsdToUyuRate = unstable_cache(
-  getUsdToUyuRateUncached,
-  ['exchange-rate'],
-  {
-    revalidate: 3600,
-    tags: ['exchange-rate'],
-  }
-)
+export function getUsdToUyuRate(
+  userId: string | null | undefined
+): Promise<ExchangeRateResult> {
+  const userKey = userId ?? 'global'
+  return unstable_cache(
+    getUsdToUyuRateUncached,
+    ['exchange-rate', userKey],
+    {
+      revalidate: 3600,
+      tags: ['exchange-rate', `exchange-rate-${userKey}`],
+    }
+  )(userId)
+}
 
 /**
  * Fetch latest USD->UYU rate from open.er-api.com and upsert as the global row.

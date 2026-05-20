@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getUsdToUyuRate } from '@/lib/exchange-rate'
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
+  revalidateTag(`exchange-rate-${user.id}`, 'max')
+
   return NextResponse.json({
     rate: data.rate,
     source: data.source,
@@ -77,6 +80,8 @@ export async function DELETE() {
     console.error('[exchange-rate] delete error:', error.message)
     return NextResponse.json({ error: 'INTERNAL_ERROR' }, { status: 500 })
   }
+
+  revalidateTag(`exchange-rate-${user.id}`, 'max')
 
   return new Response(null, { status: 204 })
 }
