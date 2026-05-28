@@ -50,8 +50,8 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
     e.preventDefault()
     setError(null)
 
-    const parsedAmount = parseFloat(amount)
-    if (!name.trim() || isNaN(parsedAmount) || parsedAmount < 0) {
+    const parsedAmount = parseFloat(amount) || 0
+    if (!name.trim() || parsedAmount < 0) {
       setError('Completá nombre y monto correctamente.')
       return
     }
@@ -103,8 +103,8 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
     if (!editState) return
     setEditError(null)
 
-    const parsedAmount = parseFloat(editState.amount)
-    if (!editState.name.trim() || isNaN(parsedAmount) || parsedAmount < 0) {
+    const parsedAmount = parseFloat(editState.amount) || 0
+    if (!editState.name.trim() || parsedAmount < 0) {
       setEditError('Completá nombre y monto correctamente.')
       return
     }
@@ -190,7 +190,6 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
                   placeholder="0"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  required
                 />
               </div>
               <div className="space-y-1">
@@ -266,7 +265,6 @@ export function FixedCostManager({ initialCosts }: FixedCostManagerProps) {
                               step="0.01"
                               value={editState.amount}
                               onChange={(e) => setEditState({ ...editState, amount: e.target.value })}
-                              required
                             />
                           </div>
                           <div className="space-y-1">

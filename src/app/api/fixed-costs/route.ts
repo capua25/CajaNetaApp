@@ -51,7 +51,7 @@ export async function POST(request: Request) {
   const body = await request.json()
   const { name, amount, recurrence, currency } = body
 
-  if (!name || amount == null || !recurrence) {
+  if (!name || !recurrence) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
@@ -59,7 +59,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 })
   }
 
-  if (typeof amount !== 'number' || amount < 0) {
+  const finalAmount = amount == null || amount === '' ? 0 : Number(amount)
+  if (!Number.isFinite(finalAmount) || finalAmount < 0) {
     return NextResponse.json({ error: 'amount must be a non-negative number' }, { status: 400 })
   }
 
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
     .insert({
       user_id: user.id,
       name: name.trim(),
-      amount: Number(amount),
+      amount: finalAmount,
       recurrence: recurrence as Recurrence,
       currency: currency ?? 'UYU',
     })
@@ -117,10 +118,11 @@ export async function PATCH(request: Request) {
     updates.name = name.trim()
   }
   if (amount !== undefined) {
-    if (typeof amount !== 'number' || amount < 0) {
+    const finalAmount = amount === '' || amount === null ? 0 : Number(amount)
+    if (!Number.isFinite(finalAmount) || finalAmount < 0) {
       return NextResponse.json({ error: 'amount must be a non-negative number' }, { status: 400 })
     }
-    updates.amount = Number(amount)
+    updates.amount = finalAmount
   }
   if (recurrence !== undefined) {
     if (!VALID_RECURRENCES.includes(recurrence as Recurrence)) {
