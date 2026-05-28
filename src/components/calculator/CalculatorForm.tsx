@@ -134,7 +134,6 @@ export function CalculatorForm({ product, onSuccess }: CalculatorFormProps) {
                 value={cost}
                 onChange={e => setCost(e.target.value)}
                 placeholder="0"
-                required
               />
             </div>
             <div className="space-y-2">
