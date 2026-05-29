@@ -94,8 +94,8 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
       const price = Number(created.price)
       const cv = cost + expenses
       const rawMc = price - cv
-      const mc = rawMc <= 0 ? null : rawMc
-      const rc = mc !== null && price > 0 ? mc / price : null
+      const mc = price === 0 ? null : rawMc
+      const rc = price === 0 ? null : rawMc / price
       const quantity_sold = Number(created.quantity_sold)
       const revenue = price * quantity_sold
       setProducts(prev => recalcWeights([{
@@ -172,8 +172,8 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
       const price = Number(updated.price)
       const cv = cost + expenses
       const rawMc = price - cv
-      const mc = rawMc <= 0 ? null : rawMc
-      const rc = mc !== null && price > 0 ? mc / price : null
+      const mc = price === 0 ? null : rawMc
+      const rc = price === 0 ? null : rawMc / price
       const quantity_sold = Number(updated.quantity_sold)
       const revenue = price * quantity_sold
       setProducts(prev =>

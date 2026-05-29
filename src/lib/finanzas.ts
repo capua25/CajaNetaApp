@@ -60,8 +60,8 @@ export function buildProductMix(
   return products.map((p) => {
     const cv = p.cost + p.expenses
     const rawMc = calcMC(p.price, cv)
-    const mc = rawMc <= 0 ? null : rawMc
-    const rc = mc !== null ? calcRC(mc, p.price) : null
+    const mc = p.price === 0 ? null : rawMc
+    const rc = p.price === 0 ? null : calcRC(rawMc, p.price)
     const revenue = p.price * p.quantity_sold
     const weight = totalQuantity > 0 ? p.quantity_sold / totalQuantity : 0
 
