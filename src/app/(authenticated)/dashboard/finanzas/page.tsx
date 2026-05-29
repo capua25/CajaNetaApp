@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { SummaryCards } from '@/components/finanzas/SummaryCards'
 import { ProductMixTable } from '@/components/finanzas/ProductMixTable'
 import { FixedCostManager } from '@/components/finanzas/FixedCostManager'
+import { SnapshotButton } from '@/components/finanzas/SnapshotButton'
 import type { UserProfile, FixedCost } from '@/lib/types'
 
 export default async function FinanzasPage() {
@@ -70,9 +71,15 @@ export default async function FinanzasPage() {
           <h1 className="text-2xl font-bold text-gray-900">Finanzas Avanzadas</h1>
           <p className="text-gray-500 text-sm mt-1">{user!.email}</p>
         </div>
-        <Link href="/dashboard">
-          <Button variant="outline" size="sm">Mis productos</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <SnapshotButton />
+          <Link href="/dashboard/finanzas/historial">
+            <Button variant="outline" size="sm">Ver histórico</Button>
+          </Link>
+          <Link href="/dashboard">
+            <Button variant="outline" size="sm">Mis productos</Button>
+          </Link>
+        </div>
       </div>
 
       <SummaryCards summary={summary} currency={displayCurrency} />
