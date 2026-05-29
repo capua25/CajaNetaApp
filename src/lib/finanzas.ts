@@ -156,6 +156,20 @@ export function calcMarginOfSafety(
 }
 
 // ---------------------------------------------------------------------------
+// Net profit
+// ---------------------------------------------------------------------------
+
+/**
+ * Ganancia neta mensual real: margen de contribución total menos gastos fijos mensuales.
+ * Asume que quantity_sold representa ventas mensuales (mismo período que los gastos fijos).
+ * Puede ser negativa si los gastos fijos superan el margen de contribución total.
+ */
+export function calcNetProfit(products: ProductWithMix[], totalFixedCostsMonthly: number): number {
+  const contributionTotal = products.reduce((sum, p) => sum + (p.mc ?? 0) * p.quantity_sold, 0)
+  return contributionTotal - totalFixedCostsMonthly
+}
+
+// ---------------------------------------------------------------------------
 // Master builder
 // ---------------------------------------------------------------------------
 

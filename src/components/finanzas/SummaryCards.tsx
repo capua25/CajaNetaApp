@@ -8,6 +8,7 @@ import { MetricChartModal } from './MetricChartModal'
 import type { MetricKey } from './MetricChartModal'
 import type { FinancialSummary } from '@/lib/types'
 import { formatCurrency } from '@/lib/currency'
+import { calcNetProfit } from '@/lib/finanzas'
 import type { Currency } from '@/lib/types'
 
 interface SummaryCardsProps {
@@ -82,7 +83,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
     products,
   } = summary
 
-  const total_net_profit = products.reduce((sum, p) => sum + (p.mc ?? 0) * p.quantity_sold, 0)
+  const total_net_profit = calcNetProfit(products, total_fixed_costs_monthly)
 
   return (
     <>
@@ -170,7 +171,7 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
         {/* Ganancia Neta */}
         <MetricCard
           title="Ganancia Neta"
-          tooltip="Suma de la ganancia de cada producto multiplicada por sus unidades vendidas. No incluye costos fijos."
+          tooltip="Margen de contribución total menos gastos fijos mensuales. Refleja la ganancia real del negocio en el mes."
         >
           {has_quantity_data ? (
             <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
