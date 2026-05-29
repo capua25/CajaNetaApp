@@ -80,7 +80,7 @@ export function BreakEvenChart({
         <span>Total para equilibrio</span>
         <span>
           {type === 'units'
-            ? `${beValue.toFixed(1)} unidades`
+            ? `${Math.ceil(beValue)} unidades`
             : formatCurrency(beValue, currency)}
         </span>
       </div>

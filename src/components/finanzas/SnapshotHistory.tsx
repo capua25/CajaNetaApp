@@ -254,7 +254,7 @@ function SnapshotDetailView({ snapshot }: { snapshot: FinanzasSnapshot }) {
       label: 'Punto de Equilibrio (unidades)',
       value:
         snapshot.break_even_units !== null
-          ? `${formatSnapshotNumber(snapshot.break_even_units, 1)} u.`
+          ? `${formatSnapshotNumber(Math.ceil(snapshot.break_even_units), 0)} u.`
           : '—',
     },
     {

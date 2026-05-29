@@ -129,7 +129,14 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           onClick={break_even_units !== null ? () => setActiveMetric('break_even_units') : undefined}
         >
           {break_even_units !== null ? (
-            <p className="text-2xl font-bold">{formatNumber(break_even_units, 1)} u.</p>
+            <div>
+              <p className="text-2xl font-bold">{formatNumber(Math.ceil(break_even_units), 0)} u.</p>
+              {Math.ceil(break_even_units) !== break_even_units && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  real: {formatNumber(break_even_units, 1)} u.
+                </p>
+              )}
+            </div>
           ) : (
             <NoData />
           )}

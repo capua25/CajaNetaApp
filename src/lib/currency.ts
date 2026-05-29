@@ -55,8 +55,3 @@ export function convertFixedCost<
     currency: displayCurrency,
   }
 }
-
-export function roundForDisplay(amount: number, currency: Currency): number {
-  const factor = currency === 'USD' ? 100 : 1
-  return Math.round(amount * factor) / factor
-}
