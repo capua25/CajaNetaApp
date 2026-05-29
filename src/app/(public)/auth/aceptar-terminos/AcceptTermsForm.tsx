@@ -1,13 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { aceptarTerminos } from './actions'
 
 export function AcceptTermsForm() {
-  const router = useRouter()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,12 +16,8 @@ export function AcceptTermsForm() {
     setError(null)
     startTransition(async () => {
       const result = await aceptarTerminos()
-      if (result.ok) {
-        router.push('/dashboard')
-        router.refresh()
-      } else {
-        setError(result.error)
-      }
+      // Si el action llegó acá, hubo un error (el camino feliz hace redirect interno)
+      setError(result.error)
     })
   }
 
