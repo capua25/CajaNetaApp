@@ -15,18 +15,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
 export function RegisterForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirmEmail, setConfirmEmail] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   async function handleGoogleSignIn() {
-    if (!acceptedTerms || !acceptedPrivacy) {
-      setError('Debés aceptar los Términos y Condiciones y la Política de Privacidad para continuar.')
-      return
-    }
     setError(null)
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
@@ -41,11 +35,6 @@ export function RegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-
-    if (!acceptedTerms || !acceptedPrivacy) {
-      setError('Debés aceptar los Términos y Condiciones y la Política de Privacidad para continuar.')
-      return
-    }
 
     const passwordError = validatePassword(password)
     if (passwordError) {
@@ -145,63 +134,12 @@ export function RegisterForm() {
             />
           </div>
 
-          {/* Checkboxes de aceptación legal */}
-          <div className="space-y-3 pt-1">
-            <div className="flex items-start gap-3">
-              <input
-                id="accept-terms"
-                type="checkbox"
-                checked={acceptedTerms}
-                onChange={e => setAcceptedTerms(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-primary cursor-pointer"
-              />
-              <label htmlFor="accept-terms" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-                Acepto los{' '}
-                <Link
-                  href="/legal/terminos"
-                  target="_blank"
-                  className="underline text-foreground hover:text-foreground/80"
-                >
-                  Términos y Condiciones
-                </Link>
-                {' '}y el{' '}
-                <Link
-                  href="/legal/aviso-legal"
-                  target="_blank"
-                  className="underline text-foreground hover:text-foreground/80"
-                >
-                  Aviso Legal
-                </Link>
-              </label>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <input
-                id="accept-privacy"
-                type="checkbox"
-                checked={acceptedPrivacy}
-                onChange={e => setAcceptedPrivacy(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-primary cursor-pointer"
-              />
-              <label htmlFor="accept-privacy" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-                He leído y acepto la{' '}
-                <Link
-                  href="/legal/privacidad"
-                  target="_blank"
-                  className="underline text-foreground hover:text-foreground/80"
-                >
-                  Política de Privacidad
-                </Link>
-              </label>
-            </div>
-          </div>
-
           {error && <p className="text-sm text-red-500">{error}</p>}
 
           <Button
             type="submit"
             className="w-full"
-            disabled={loading || !acceptedTerms || !acceptedPrivacy}
+            disabled={loading}
           >
             {loading ? 'Creando cuenta...' : 'Crear cuenta'}
           </Button>
@@ -210,6 +148,17 @@ export function RegisterForm() {
             <Link href="/auth/login" className="underline">
               Iniciar sesión
             </Link>
+          </p>
+          <p className="text-center text-xs text-muted-foreground">
+            Al registrarte aceptás nuestros{' '}
+            <Link href="/legal/terminos" className="underline hover:text-foreground/80">
+              Términos y Condiciones
+            </Link>
+            {' '}y la{' '}
+            <Link href="/legal/privacidad" className="underline hover:text-foreground/80">
+              Política de Privacidad
+            </Link>
+            .
           </p>
         </form>
       </CardContent>
