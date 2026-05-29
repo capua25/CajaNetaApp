@@ -86,3 +86,35 @@ export interface ExchangeRate {
   created_at: string
   updated_at: string
 }
+
+export interface SnapshotFixedCostDetail {
+  id: string
+  name: string
+  amount: number
+  recurrence: Recurrence
+  currency: Currency
+}
+
+export interface SnapshotDetail {
+  products: ProductWithMix[]
+  fixed_costs: SnapshotFixedCostDetail[]
+}
+
+export interface FinanzasSnapshot {
+  id: string
+  user_id: string
+  created_at: string
+  note: string | null
+  display_currency: Currency
+  usd_to_uyu_rate: number
+  total_fixed_costs_monthly: number
+  mc_mix: number | null
+  rc_mix: number | null
+  break_even_units: number | null
+  break_even_revenue: number | null
+  margin_of_safety: number | null
+  actual_revenue: number
+  net_profit: number
+  has_quantity_data: boolean
+  detail: SnapshotDetail
+}
