@@ -100,19 +100,19 @@ export function calcMCMix(products: ProductWithMix[]): number | null {
 
 /**
  * Weighted contribution ratio of the product mix.
+ * rc_mix = total_contribution / total_revenue  (weighted by revenue, not units).
+ * This is the standard accounting formula: CF / rc_mix = break-even revenue.
  * Returns null if no qualifying products or total revenue is 0.
  */
 export function calcRCMix(products: ProductWithMix[]): number | null {
-  const active = products.filter((p) => p.quantity_sold > 0 && p.rc !== null)
+  const active = products.filter((p) => p.quantity_sold > 0 && p.mc !== null)
   if (active.length === 0) return null
 
-  const totalQuantity = active.reduce((sum, p) => sum + p.quantity_sold, 0)
-  if (totalQuantity === 0) return null
+  const totalRevenue = active.reduce((sum, p) => sum + p.price * p.quantity_sold, 0)
+  if (totalRevenue === 0) return null
 
-  const weightedSum = active.reduce((sum, p) => {
-    return sum + (p.rc as number) * p.quantity_sold
-  }, 0)
-  return weightedSum / totalQuantity
+  const totalContribution = active.reduce((sum, p) => sum + (p.mc as number) * p.quantity_sold, 0)
+  return totalContribution / totalRevenue
 }
 
 // ---------------------------------------------------------------------------
