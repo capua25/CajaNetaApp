@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { iniciarSesion } from '@/app/(public)/auth/login/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,7 +25,6 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [forgotSent, setForgotSent] = useState(false)
   const [cooldown, setCooldown] = useState(0)
-  const router = useRouter()
 
   // FINDING-004: decrement cooldown every second
   useEffect(() => {
@@ -52,17 +51,10 @@ export function LoginForm() {
     setError(null)
     setLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-    if (error) {
-      setError('Email o contraseña incorrectos')
-      setLoading(false)
-      return
-    }
-
-    router.refresh()
-    router.push('/dashboard')
+    const result = await iniciarSesion(email, password)
+    // Solo llegamos acá si hubo error: en éxito el action redirige server-side.
+    setError(result.error)
+    setLoading(false)
   }
 
   async function handleForgot(e: React.FormEvent) {
