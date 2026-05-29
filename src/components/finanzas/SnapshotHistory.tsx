@@ -222,10 +222,82 @@ export function SnapshotHistory({
   )
 }
 
+function formatSnapshotNumber(value: number, decimals = 0): string {
+  return new Intl.NumberFormat('es-UY', {
+    maximumFractionDigits: decimals,
+  }).format(value)
+}
+
 function SnapshotDetailView({ snapshot }: { snapshot: FinanzasSnapshot }) {
   const { detail, display_currency } = snapshot
+
+  const kpis: { label: string; value: string }[] = [
+    {
+      label: 'Costos Fijos Mensuales',
+      value: formatCurrency(snapshot.total_fixed_costs_monthly, display_currency),
+    },
+    {
+      label: 'Margen de Contribución Mix',
+      value:
+        snapshot.mc_mix !== null
+          ? formatCurrency(snapshot.mc_mix, display_currency)
+          : '—',
+    },
+    {
+      label: 'Ratio de Contribución Mix',
+      value:
+        snapshot.rc_mix !== null
+          ? `${formatSnapshotNumber(snapshot.rc_mix * 100, 1)}%`
+          : '—',
+    },
+    {
+      label: 'Punto de Equilibrio (unidades)',
+      value:
+        snapshot.break_even_units !== null
+          ? `${formatSnapshotNumber(snapshot.break_even_units, 1)} u.`
+          : '—',
+    },
+    {
+      label: 'Punto de Equilibrio (ingresos)',
+      value:
+        snapshot.break_even_revenue !== null
+          ? formatCurrency(snapshot.break_even_revenue, display_currency)
+          : '—',
+    },
+    {
+      label: 'Ventas Actuales',
+      value: formatCurrency(snapshot.actual_revenue, display_currency),
+    },
+    {
+      label: 'Ganancia Neta',
+      value: formatCurrency(snapshot.net_profit, display_currency),
+    },
+    {
+      label: 'Margen de Seguridad',
+      value:
+        snapshot.margin_of_safety !== null
+          ? `${formatSnapshotNumber(snapshot.margin_of_safety * 100, 1)}%`
+          : '—',
+    },
+  ]
+
   return (
     <div className="space-y-4">
+      {/* Estadísticas del snapshot */}
+      <div>
+        <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-1">
+          Estadísticas
+        </h4>
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-0.5 sm:grid-cols-4">
+          {kpis.map(({ label, value }) => (
+            <li key={label} className="text-xs flex justify-between gap-2">
+              <span className="text-muted-foreground">{label}</span>
+              <span className="tabular-nums font-medium">{value}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <div>
         <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-1">
           Productos
