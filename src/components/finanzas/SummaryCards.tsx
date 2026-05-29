@@ -85,6 +85,15 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
 
   const total_net_profit = calcNetProfit(products, total_fixed_costs_monthly)
 
+  // Costo de productos vendidos derivado de la contribución total que usa calcNetProfit.
+  // Opción (b): costo_productos = actual_revenue − contributionTotal, donde
+  // contributionTotal = Σ((mc ?? 0) × q). Esto garantiza la identidad
+  // actual_revenue − (costo_productos + CF) === total_net_profit incluso para
+  // productos con mc nulo (pérdida), ya que calcNetProfit los trata como mc=0.
+  const contribution_total = products.reduce((sum, p) => sum + (p.mc ?? 0) * p.quantity_sold, 0)
+  const costo_productos_vendidos = actual_revenue - contribution_total
+  const costos_totales = costo_productos_vendidos + total_fixed_costs_monthly
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -181,9 +190,25 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           tooltip="Margen de contribución total menos gastos fijos mensuales. Refleja la ganancia real del negocio en el mes."
         >
           {has_quantity_data ? (
-            <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatCurrency(total_net_profit, currency)}
-            </p>
+            <div>
+              <p className={`text-2xl font-bold ${total_net_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {formatCurrency(total_net_profit, currency)}
+              </p>
+              <dl className="mt-2 space-y-0.5 text-xs text-muted-foreground">
+                <div className="flex justify-between gap-4">
+                  <dt>Costo productos vendidos</dt>
+                  <dd className="font-medium tabular-nums">{formatCurrency(costo_productos_vendidos, currency)}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt>Costos fijos</dt>
+                  <dd className="font-medium tabular-nums">{formatCurrency(total_fixed_costs_monthly, currency)}</dd>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-border/50 pt-0.5">
+                  <dt className="font-medium">Costos totales</dt>
+                  <dd className="font-medium tabular-nums">{formatCurrency(costos_totales, currency)}</dd>
+                </div>
+              </dl>
+            </div>
           ) : (
             <NoData />
           )}
