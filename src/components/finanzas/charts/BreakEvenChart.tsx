@@ -28,7 +28,7 @@ export function BreakEvenChart({
     )
   }
 
-  const active = products.filter((p) => p.quantity_sold > 0 && p.mc !== null)
+  const active = products.filter((p) => p.quantity_sold > 0 && p.mc !== null && p.mc > 0)
 
   if (active.length === 0) {
     return (

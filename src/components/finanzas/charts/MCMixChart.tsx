@@ -30,7 +30,8 @@ export function MCMixChart({ products, mc_mix, currency }: MCMixChartProps) {
     )
   }
 
-  const maxMC = active[0].mc as number
+  // Escala basada en el valor absoluto máximo para que barras negativas tengan ancho válido.
+  const maxAbsMC = Math.max(...active.map((p) => Math.abs(p.mc as number)))
 
   return (
     <div className="space-y-4">
@@ -39,37 +40,42 @@ export function MCMixChart({ products, mc_mix, currency }: MCMixChartProps) {
       </p>
 
       <div className="space-y-4">
-        {active.map((p) => (
-          <div key={p.id} className="space-y-1.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium truncate max-w-[50%]">{p.name}</span>
-              <div className="text-right">
-                <span className="font-medium tabular-nums">
-                  {formatCurrency(p.mc as number, currency)}
-                </span>
-                {p.rc !== null && (
-                  <span className="text-muted-foreground text-xs ml-1.5">
-                    RC {(p.rc * 100).toFixed(1)}%
+        {active.map((p) => {
+          const mc = p.mc as number
+          const isLoss = mc < 0
+          const barWidth = maxAbsMC > 0 ? (Math.abs(mc) / maxAbsMC) * 100 : 0
+          return (
+            <div key={p.id} className="space-y-1.5">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-medium truncate max-w-[50%]">{p.name}</span>
+                <div className="text-right">
+                  <span className={`font-medium tabular-nums ${isLoss ? 'text-red-600' : ''}`}>
+                    {formatCurrency(mc, currency)}
                   </span>
-                )}
+                  {p.rc !== null && (
+                    <span className="text-muted-foreground text-xs ml-1.5">
+                      RC {(p.rc * 100).toFixed(1)}%
+                    </span>
+                  )}
+                </div>
               </div>
+              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${isLoss ? 'bg-red-500' : 'bg-emerald-500'}`}
+                  style={{ width: `${barWidth}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {(p.weight * 100).toFixed(0)}% del mix · {p.quantity_sold} u. vendidas
+              </p>
             </div>
-            <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full rounded-full bg-emerald-500"
-                style={{ width: `${((p.mc as number) / maxMC) * 100}%` }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {(p.weight * 100).toFixed(0)}% del mix · {p.quantity_sold} u. vendidas
-            </p>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <div className="pt-3 border-t flex items-center justify-between text-sm font-semibold">
         <span>MC Mix ponderado</span>
-        <span>{formatCurrency(mc_mix, currency)}</span>
+        <span className={mc_mix < 0 ? 'text-red-600' : ''}>{formatCurrency(mc_mix, currency)}</span>
       </div>
     </div>
   )

@@ -69,6 +69,12 @@ function NoData() {
   )
 }
 
+function NotReachable() {
+  return (
+    <span className="text-sm text-red-600 italic">No alcanzable con el mix actual</span>
+  )
+}
+
 export function SummaryCards({ summary, currency }: SummaryCardsProps) {
   const [activeMetric, setActiveMetric] = useState<MetricKey | null>(null)
 
@@ -118,7 +124,9 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
           onClick={mc_mix !== null ? () => setActiveMetric('mc_mix') : undefined}
         >
           {mc_mix !== null ? (
-            <p className="text-2xl font-bold">{formatCurrency(mc_mix, currency)}</p>
+            <p className={`text-2xl font-bold ${mc_mix < 0 ? 'text-red-600' : ''}`}>
+              {formatCurrency(mc_mix, currency)}
+            </p>
           ) : (
             <div>
               <NoData />
@@ -146,6 +154,8 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
                 </p>
               )}
             </div>
+          ) : has_quantity_data ? (
+            <NotReachable />
           ) : (
             <NoData />
           )}
@@ -159,6 +169,8 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
         >
           {break_even_revenue !== null ? (
             <p className="text-2xl font-bold">{formatCurrency(break_even_revenue, currency)}</p>
+          ) : has_quantity_data ? (
+            <NotReachable />
           ) : (
             <NoData />
           )}
@@ -224,6 +236,8 @@ export function SummaryCards({ summary, currency }: SummaryCardsProps) {
             <p className={`text-2xl font-bold ${safetyMarginColor(margin_of_safety)}`}>
               {formatNumber(margin_of_safety * 100, 1)}%
             </p>
+          ) : has_quantity_data ? (
+            <NotReachable />
           ) : (
             <NoData />
           )}
