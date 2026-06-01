@@ -77,8 +77,8 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
         body: JSON.stringify({
           name: newName.trim(),
           price: Number(newPrice),
-          cost: Number(newCost),
-          expenses: Number(newExpenses),
+          cost: Number(newCost) || 0,
+          expenses: Number(newExpenses) || 0,
           quantity_sold: parseInt(newQty) || 0,
           desired_margin: 0.3,
           currency: newCurrency,
@@ -155,8 +155,8 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
         body: JSON.stringify({
           name: editState.name.trim(),
           price: Number(editState.price),
-          cost: Number(editState.cost),
-          expenses: Number(editState.expenses),
+          cost: Number(editState.cost) || 0,
+          expenses: Number(editState.expenses) || 0,
           quantity_sold: parseInt(editState.quantity_sold) || 0,
           desired_margin: 0.3,
           currency: editState.currency,
@@ -233,11 +233,11 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-cost">Costo</Label>
-              <Input id="new-cost" type="number" min="0" step="0.01" value={newCost} onChange={e => setNewCost(e.target.value)} required />
+              <Input id="new-cost" type="number" min="0" step="0.01" value={newCost} onChange={e => setNewCost(e.target.value)} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-expenses">Gastos</Label>
-              <Input id="new-expenses" type="number" min="0" step="0.01" value={newExpenses} onChange={e => setNewExpenses(e.target.value)} required />
+              <Input id="new-expenses" type="number" min="0" step="0.01" value={newExpenses} onChange={e => setNewExpenses(e.target.value)} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new-qty">Unidades vendidas</Label>
@@ -334,7 +334,6 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
                           step="0.01"
                           value={editState.cost}
                           onChange={(e) => setEditState({ ...editState, cost: e.target.value })}
-                          required
                         />
                       </div>
                       <div className="space-y-1">
@@ -346,7 +345,6 @@ export function ProductMixTable({ initialProducts, has_quantity_data, currency }
                           step="0.01"
                           value={editState.expenses}
                           onChange={(e) => setEditState({ ...editState, expenses: e.target.value })}
-                          required
                         />
                       </div>
                       <div className="space-y-1">
