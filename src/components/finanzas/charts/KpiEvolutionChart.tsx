@@ -9,12 +9,14 @@ interface KpiEvolutionChartProps {
   title: string
   points: KpiPoint[] // orden cronológico ascendente
   formatValue: (v: number) => string
+  higherIsBetter?: boolean
 }
 
 export function KpiEvolutionChart({
   title,
   points,
   formatValue,
+  higherIsBetter = true,
 }: KpiEvolutionChartProps) {
   const valid = points.filter((p) => p.value !== null) as Array<{
     date: string
@@ -65,11 +67,16 @@ export function KpiEvolutionChart({
         <h3 className="text-sm font-medium">{title}</h3>
         <span
           className={`text-xs font-medium ${
-            delta >= 0 ? 'text-emerald-600' : 'text-red-600'
+            delta === 0
+              ? 'text-muted-foreground'
+              : (higherIsBetter ? delta > 0 : delta < 0)
+                ? 'text-emerald-600'
+                : 'text-red-600'
           }`}
         >
-          {delta >= 0 ? '▲' : '▼'} {formatValue(Math.abs(delta))} (
-          {deltaPct.toFixed(1)}%)
+          {delta === 0
+            ? '—'
+            : `${delta > 0 ? '▲' : '▼'} ${formatValue(Math.abs(delta))} (${deltaPct.toFixed(1)}%)`}
         </span>
       </div>
       <svg

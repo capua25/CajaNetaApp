@@ -120,6 +120,7 @@ export function SnapshotHistory({
                 value: s.break_even_revenue,
               }))}
               formatValue={(v) => formatCurrency(v, currency)}
+              higherIsBetter={false}
             />
             <KpiEvolutionChart
               title="Ventas actuales"

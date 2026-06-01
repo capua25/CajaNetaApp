@@ -77,6 +77,12 @@ export function SnapshotButton() {
                 value={note}
                 maxLength={200}
                 onChange={(e) => setNote(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !saving) {
+                    e.preventDefault()
+                    handleSave()
+                  }
+                }}
                 placeholder="Ej: Cierre de marzo"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               />
