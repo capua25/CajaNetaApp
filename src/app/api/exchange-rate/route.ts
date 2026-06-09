@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getUsdToUyuRate } from '@/lib/exchange-rate'
 import { revalidateTag } from 'next/cache'
+import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -18,6 +19,11 @@ export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rl = rateLimit(`exchange-rate:${user.id}`, { limit: 10, windowMs: 60_000 })
+  if (!rl.success) {
+    return NextResponse.json({ error: 'RATE_LIMITED' }, { status: 429 })
+  }
 
   const body = await request.json().catch(() => null)
   const rate = Number(body?.rate)

@@ -28,10 +28,15 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'updates must be a non-empty array no larger than your product count' }, { status: 400 })
   }
 
+  const seenIds = new Set<string>()
   for (const item of updates) {
     if (!UUID_REGEX.test(item.id)) {
       return NextResponse.json({ error: `Invalid id: ${item.id}` }, { status: 400 })
     }
+    if (seenIds.has(item.id)) {
+      return NextResponse.json({ error: `Duplicate id: ${item.id}` }, { status: 400 })
+    }
+    seenIds.add(item.id)
     if (!Number.isInteger(item.quantity_sold) || item.quantity_sold < 0) {
       return NextResponse.json({ error: 'quantity_sold must be a non-negative integer' }, { status: 400 })
     }

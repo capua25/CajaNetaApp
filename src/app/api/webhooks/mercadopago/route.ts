@@ -9,18 +9,31 @@ const PLAN_BY_MP_ID: () => Record<string, Plan> = () => ({
   [process.env.MP_PLAN_ID_PRO ?? '']: 'pro',
 })
 
+/** Mask PII: show first 2 chars + domain only. e.g. "ma***@gmail.com" */
+function maskEmail(email: string | null | undefined): string {
+  if (!email) return '(no email)'
+  const atIdx = email.indexOf('@')
+  if (atIdx < 0) return '***'
+  const local = email.slice(0, atIdx)
+  const domain = email.slice(atIdx)
+  const visible = local.slice(0, 2)
+  return `${visible}***${domain}`
+}
+
 export async function POST(request: NextRequest) {
   const rawBody = await request.text()
 
-  if (!validateWebhookSignature(request.headers, rawBody)) {
-    return NextResponse.json({ error: 'INVALID_SIGNATURE' }, { status: 401 })
-  }
-
+  // Parse body ONCE — pass dataId to validateWebhookSignature to avoid second parse (FIX 7)
   let payload: { type?: string; data?: { id?: string } }
   try {
     payload = JSON.parse(rawBody)
   } catch {
     return NextResponse.json({ error: 'INVALID_BODY' }, { status: 400 })
+  }
+
+  const dataId = payload?.data?.id ?? ''
+  if (!validateWebhookSignature(request.headers, rawBody, dataId)) {
+    return NextResponse.json({ error: 'INVALID_SIGNATURE' }, { status: 401 })
   }
 
   // Acknowledge and ignore non-subscription events
@@ -74,7 +87,22 @@ export async function POST(request: NextRequest) {
 
   const supabase = createServiceClient()
 
-  // Find user by mp_subscription_id first, then fall back to payer_email
+  // Idempotency check — deduplicate via mp_webhook_events (FIX 3)
+  const { error: dedupeError } = await supabase
+    .from('mp_webhook_events')
+    .insert({ subscription_id: subscriptionId, mp_status: preapproval.status })
+
+  if (dedupeError) {
+    if (dedupeError.code === '23505') {
+      // Unique violation — event already processed
+      console.log('[webhook] Evento ya procesado, ignorando:', subscriptionId, preapproval.status)
+      return NextResponse.json({ ok: true })
+    }
+    // Any other error: log and continue (fail-open — don't block legitimate events)
+    console.error('[webhook] Error al insertar en mp_webhook_events:', dedupeError.message)
+  }
+
+  // Find user by mp_subscription_id first, then fall back to external_reference
   let userId: string | null = null
 
   const { data: bySubId } = await supabase
@@ -98,11 +126,13 @@ export async function POST(request: NextRequest) {
   }
 
   if (!userId && preapproval.payer_email) {
-    console.warn('[webhook] Could not find user by subscription_id or external_reference. Email fallback skipped for:', preapproval.payer_email)
+    // FIX 6: mask PII before logging
+    console.warn('[webhook] Could not find user by subscription_id or external_reference. Email fallback skipped for:', maskEmail(preapproval.payer_email))
   }
 
   if (!userId) {
-    console.warn('[webhook] Could not find user for subscription:', subscriptionId, '| payer_email:', preapproval.payer_email)
+    // FIX 6: mask PII before logging
+    console.warn('[webhook] Could not find user for subscription:', subscriptionId, '| payer_email:', maskEmail(preapproval.payer_email))
     return NextResponse.json({ ok: true })
   }
 

@@ -35,13 +35,19 @@ export async function getPreapprovalPlan(planId: string): Promise<{ init_point: 
 }
 
 
+const PREAPPROVAL_ID_REGEX = /^[a-zA-Z0-9_-]{10,60}$/
+
 export async function getPreapproval(id: string): Promise<MPPreapproval> {
+  if (!PREAPPROVAL_ID_REGEX.test(id)) {
+    throw new Error('INVALID_PREAPPROVAL_ID')
+  }
+
   const token = getAccessToken()
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 4000)
 
   try {
-    const res = await fetch(`${MP_API}/preapproval/${id}`, {
+    const res = await fetch(`${MP_API}/preapproval/${encodeURIComponent(id)}`, {
       headers: { Authorization: `Bearer ${token}` },
       signal: controller.signal,
     })
@@ -75,7 +81,18 @@ export async function cancelPreapproval(id: string): Promise<void> {
   }
 }
 
-export function validateWebhookSignature(headers: Headers, rawBody: string): boolean {
+/**
+ * Validate MP webhook HMAC signature.
+ * @param headers   Request headers
+ * @param rawBody   Raw request body string (used only for manifest building — NOT reparsed)
+ * @param dataId    Pre-extracted data.id from the parsed body. When provided, avoids a
+ *                  second JSON.parse of rawBody. Falls back to parsing rawBody if omitted.
+ */
+export function validateWebhookSignature(
+  headers: Headers,
+  rawBody: string,
+  dataId?: string
+): boolean {
   try {
     const secret = process.env.MERCADOPAGO_WEBHOOK_SECRET
     if (!secret) return false
@@ -99,12 +116,12 @@ export function validateWebhookSignature(headers: Headers, rawBody: string): boo
     const nowSec = Math.floor(Date.now() / 1000)
     if (isNaN(tsNum) || Math.abs(nowSec - tsNum) > 300) return false
 
-    // Parse data.id from raw body
-    const payload = JSON.parse(rawBody)
-    const dataId: string = payload?.data?.id ?? ''
+    // Use pre-extracted dataId when available; otherwise parse rawBody (single parse fallback)
+    const resolvedDataId: string =
+      dataId !== undefined ? dataId : (JSON.parse(rawBody)?.data?.id ?? '')
 
     // Build manifest
-    const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`
+    const manifest = `id:${resolvedDataId};request-id:${xRequestId};ts:${ts};`
 
     // HMAC-SHA256
     const digest = createHmac('sha256', secret).update(manifest).digest('hex')

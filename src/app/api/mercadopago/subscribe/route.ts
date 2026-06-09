@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getPreapprovalPlan } from '@/lib/mercadopago'
+import { rateLimit } from '@/lib/rate-limit'
 import type { Plan } from '@/lib/types'
 
 const MP_PLAN_ID_KEY: Record<'plus' | 'pro', string> = {
@@ -16,6 +17,11 @@ export async function POST(request: NextRequest) {
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const rl = rateLimit(`subscribe:${user.id}`, { limit: 5, windowMs: 60_000 })
+  if (!rl.success) {
+    return NextResponse.json({ error: 'RATE_LIMITED' }, { status: 429 })
   }
 
   let body: { plan?: unknown }
